@@ -44,6 +44,8 @@ source ./test.sh
 if [[ $ERROR -eq 0 ]]
 then
     echo "::notice::All ($TOTAL_TESTS) tests ran successfully on Pampero"
+else
+    echo "::warning::Pampero had a non-zero exit code ($ERROR). Tests run: $TOTAL_TESTS."
 fi
 
 exit $ERROR

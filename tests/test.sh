@@ -15,14 +15,21 @@ do
             ERROR=2
         fi
 
-        ./test.out
-        GCC_EXEC=$?
-        rm -f ./test.out
-        if [ $GCC_EXEC -ne 0 ]
+        # If the code compiled succesfully, then try to execute it
+        if [[ $ERROR -eq 0 ]]
         then
-            echo "::error file={$file}::Code failed at runtime on test: $file"
-            ERROR=3
+            ./test.out
+            GCC_EXEC=$?
+            rm -f ./test.out
+            if [ $GCC_EXEC -ne 0 ]
+            then
+                echo "::error file={$file}::Code failed at runtime on test: $file"
+                ERROR=3
+            fi
+            let TOTAL_TESTS=TOTAL_TESTS+1
         fi
-        let TOTAL_TESTS=TOTAL_TESTS+1
+
+        rm -f ./test.out
+
     fi
 done
