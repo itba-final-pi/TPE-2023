@@ -1,0 +1,80 @@
+# Github Action to Compile and Test code from the project
+name: Compile & Test C
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the "main" branch
+  push:
+    paths:
+      - '**.c'
+      - '**.h'
+      - '**.yml'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - '**.c'
+      - '**.h'
+      - '**.yml'
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  build:
+    # The type of runner that the job will run on
+    runs-on: ${{ matrix.os }}
+    strategy:
+      max-parallel: 3
+      fail-fast: true
+      matrix:
+        # Test on multiple OS in case linking or libraries were to fail on different machines
+        os:
+          - ubuntu-22.04
+          - ubuntu-20.04
+      
+    # Steps represent a sequence of tasks that will be executed as part of the job
+    steps:
+      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+
+      - name: Build and test
+        shell: bash {0}
+        run: |
+          chmod 666 /dev/null
+          cd ./tests
+          OS=${{ matrix.os }}
+          source ./test.sh
+
+          if [[ "$ERROR" -eq "0" ]]
+          then
+              echo "::notice::All ($TOTAL_TESTS) tests ran successfully on ${{ matrix.os }}"
+          fi
+
+          exit $ERROR
+          
+  pampero:
+      runs-on: ubuntu-latest
+      steps:
+        # Checks the repository under $GITHUB_WORKSPACE, so the job can access it
+        - uses: actions/checkout@v4
+          with:
+            ref: ${{ github.ref }}
+
+        - name: Pampero
+          env:
+            BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
+          run: |
+            cd ./tests
+            sed -i "s/\$GIT_SECRET/${{ secrets.ACCESS_TOKEN }}/g" pampero.sh
+            sed -i "s/\$BRANCH_NAME/$BRANCH_NAME/g" pampero.sh
+            sshpass -p "${{ secrets.ITBA_PWD_PAMPERO }}" ssh -o StrictHostKeyChecking=no ${{ secrets.ITBA_USR_PAMPERO }}@pampero.itba.edu.ar "$(cat pampero.sh)"
+            PAMPERO_EXITC=$?
+            if [ $PAMPERO_EXITC -ne 0 ]
+            then
+                echo "::error file={test-c.yml}, title={"Tests failed on Pampero"}::Pampero's exit code: $PAMPERO_EXITC"
+                exit $PAMPERO_EXITC
+            fi
