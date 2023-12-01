@@ -1,6 +1,6 @@
 # Contributing guide
 
-This repository is intended to keep track of "TPE Programación Imperativa (72.31)"
+This repository is intended to keep track of "TPE Programación Imperativa (72.31)".
 
 ## Members
 
@@ -19,9 +19,9 @@ Changes regarding documenation, typos, and other non-critical aspects may be com
 
 ## Issues
 
-All contributors are encouraged to open issues regarding questions, bugs and/or concerns
+All contributors are encouraged to open issues regarding questions, bugs and/or concerns.
 
-Issues may be created to keep track, highlight or assign tasks to other members
+Issues may be created to keep track, highlight or assign tasks to other members.
 
 ## Style
 
@@ -40,7 +40,7 @@ All commits and Pull Requests **must** follow [Conventional Commits](https://www
 | style    | Style                     | Improve code style                                        |
 | test     | Test                      | Add, fix, expand testing                                  |
 
-Where scope must be either `front`, `back` or unspecified if neither applies to the changes being made
+Where scope must be either `front`, `back` or unspecified if neither applies to the changes being made.
 
 ### Language
 
