@@ -56,3 +56,12 @@ Mkfile.old
 dkms.conf
 *.DS_STORE
 .out
+
+# vscode
+.vscode/
+
+# temp
+temp/
+
+# datasets
+Datasets\ Alumnos/
