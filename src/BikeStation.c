@@ -3,6 +3,15 @@
 
 #include "../headers/BikeStation.h"
 
+typedef struct BikeStationCDT {
+    size_t id;
+    char * name;
+    double latitude;
+    double longitude;
+    size_t memberTrips;
+    size_t casualTrips;
+} BikeStationCDT;
+
 BikeStation newBikeStation(size_t id, char * name) {
     BikeStation new = calloc(1, sizeof(BikeStationCDT));
     new->id = id;
