@@ -15,6 +15,7 @@ typedef struct BikeStationCDT {
 BikeStation newBikeStation(size_t id, char * name) {
     BikeStation new = calloc(1, sizeof(BikeStationCDT));
     new->id = id;
+    new->name = malloc(strlen(name) + 1);
     strcpy(new->name, name);
     return new;
 }
