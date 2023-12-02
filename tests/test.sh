@@ -2,12 +2,25 @@
 TOTAL_TESTS=0
 ERROR=0
 
-for file in `ls ./files -1 | egrep ".*.test.c"`
+# Check if the code for the main source compiles
+# The output binary isn't tested, the source is just checked to make sure it compiles
+gcc "../main.c" -Wall -Wextra -Werror -pedantic -std=c99 -fsanitize=address -o test.out
+GCC_EXITC=$?
+
+if [[ $GCC_EXITC -ne 0 ]]
+then
+    echo "::error file={main.c}::GCC failed to compile MAIN SOURCE CODE"
+    ERROR=2
+fi
+
+rm -f test.out
+
+for file in `ls -1 files | egrep ".*.test.c"`
 do
     echo "$file" | egrep '.*template.*' -q
     if [[ "$?" -ne 0 && $ERROR -eq 0 ]]
     then
-        gcc "./files/$file" -DDEBUG_RUN_TESTS -Wall -pedantic -std=c99 -Werror -fsanitize=address -o test.out
+        gcc "./files/$file" -DDEBUG_RUN_TESTS -Wall -Wextra -Werror -pedantic -std=c99 -fsanitize=address -o test.out
         GCC_EXITC=$?
         if [ $GCC_EXITC -ne 0 ]
         then
