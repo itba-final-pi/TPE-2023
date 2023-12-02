@@ -8,6 +8,8 @@ typedef struct BikeStationCDT * BikeStation;
 // Creates a new BikeStation
 BikeStation newBikeStation(size_t id, char * name);
 
+void freeStation(BikeStation station);
+
 void setLatitude(BikeStation station, double latitude);
 
 void setLongitude(BikeStation station, double longitude);
