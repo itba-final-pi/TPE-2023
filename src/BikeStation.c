@@ -73,4 +73,3 @@ size_t getId(BikeStation station) {
 int compareStationsByName(BikeStation a, BikeStation b){
 	return strcmp(a->name, b->name);
 }
-

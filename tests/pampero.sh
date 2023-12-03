@@ -36,10 +36,9 @@ cd "./$FOLDER"
 git checkout $BRANCH_NAME
 
 # Run tests
-cd "./tests"
 
 # defines: TOTAL_TEST, ERROR
-source ./test.sh
+source ./tests/test.sh
 
 if [[ $ERROR -eq 0 ]]
 then
