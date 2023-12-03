@@ -4,7 +4,11 @@ ERROR=0
 
 # Check if the code for the main source compiles
 # The output binary isn't tested, the source is just checked to make sure it compiles
-gcc "../main.c" -Wall -Wextra -Werror -pedantic -std=c99 -fsanitize=address -o test.out
+# @todo Replace with Makefile
+gcc "../main.c" "../src/BikeStation.c" \
+-I. -I../headers \
+-Wall -Wextra -Werror -pedantic -std=c99 -fsanitize=address -I. -I../src/ -I../headers -o test.out
+
 GCC_EXITC=$?
 
 if [[ $GCC_EXITC -ne 0 ]]
@@ -20,7 +24,11 @@ do
     echo "$file" | egrep '.*template.*' -q
     if [[ "$?" -ne 0 && $ERROR -eq 0 ]]
     then
-        gcc "./files/$file" -DDEBUG_RUN_TESTS -Wall -Wextra -Werror -pedantic -std=c99 -fsanitize=address -o test.out
+        # @todo Replace with Makefile
+        gcc "./files/$file" "../src/BikeStation.c" \
+        -I. -I../headers \
+        -DDEBUG_RUN_TESTS -Wall -Wextra -Werror -pedantic -std=c99  -fsanitize=address -o test.out
+
         GCC_EXITC=$?
         if [ $GCC_EXITC -ne 0 ]
         then
