@@ -6,18 +6,21 @@ LINKER_FLAGS = $(FLAGS) -fsanitize=address -Itests -Iheaders
 SOURCES=$(shell for i in `ls -1 ./src`; do echo "./src/$$i"; done  )
 OBJECTS = src/BikeStation.o src/CityStations.o
 
-main.o: main.c
-	$(COMPILER) $(FLAGS) -c main.c -o /out/main.o
+.PHONY: main.o
+main.o:
+	$(COMPILER) $(FLAGS) -c main.c -o ./out/main.o
 
 $(OBJECTS): src/%.o : src/%.c
-	# @echo %
-	# @echo $(notdir $@)
-	# @echo $<
 	$(COMPILER) $(FLAGS) -c $< -o ./out/$(notdir $@)
 
 tests/files/%:
 	$(COMPILER) $@.test.c ${SOURCES} $(LINKER_FLAGS) -DDEBUG_RUN_TESTS -o ./tests/test.out
-	
-.PHONY clear_out:
+
+.PHONY: all
+all:
+	$(COMPILER) $(LINKER_FLAGS) ./out/main.o ./out/BikeStation.o -o main
+
+.PHONY: clear_out
+clear_out:
 	@if [ -d "./out" ]; then rm -rf "./out" ; fi
 	@mkdir out
