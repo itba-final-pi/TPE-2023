@@ -93,6 +93,8 @@ static int _loadStations(CityStations city, const char *stations_path)
     }
 
     char *field;
+    // First line with header data
+    fgets(line, LINE_SIZE, (FILE *)fp);
     while (fgets(line, LINE_SIZE, (FILE *)fp) != NULL)
     {
         field = strtok(line, DELIM);
@@ -158,6 +160,10 @@ static List _add(List list, BikeStation station)
     return list;
 }
 
+size_t getStationsCount(CityStations city) {
+    return city->stations_count;
+}
+
 void freeCityStations(CityStations city)
 {
     size_t i;
@@ -206,12 +212,12 @@ void printMemoryAddressStations(CityStations city)
 //     //  - sort the stations list by number of trips
 // }
 
-int main(void)
-{
-    CityStations city = newCityStations("../temp/stationsMON.csv", "../temp/bikesMON.csv");
-    printStation(city, 520);
-    printMemoryAddressStations(city);
-    freeCityStations(city);
+// int main(void)
+// {
+//     CityStations city = newCityStations("../temp/stationsMON.csv", "../temp/bikesMON.csv");
+//     printStation(city, 520);
+//     printMemoryAddressStations(city);
+//     freeCityStations(city);
 
-    return 0;
-}
+//     return 0;
+// }

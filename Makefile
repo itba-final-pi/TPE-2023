@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 COMPILER = gcc
-FLAGS = -Wall -Wextra -pedantic -std=c99 
+FLAGS = -Wall -Wextra -Werror -pedantic -std=c99 
 LINKER_FLAGS = -fsanitize=address
 TEST_FLAGS = -DDEBUG_RUN_TESTS
 
