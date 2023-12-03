@@ -6,6 +6,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 
 #define BLOCK_STATION 1000
 
@@ -15,11 +16,6 @@
 #define DELIM ";"
 
 typedef enum {ID = 0, NAME, LATITUDE, LONGITUDE} Fields;
-
-
-static int _loadStations(CityStations city, const char * stations_path);
-static void _processTrips(CityStations city, const char * trips_path);
-static void _orderStationsByTrips(new);
 
 
 
@@ -41,6 +37,12 @@ typedef struct CityStationsCDT{
     size_t stations_count;
 }CityStationsCDT;
 
+static int _loadStations(CityStations city, const char * stations_path);
+static void _processTrips(CityStations city, const char * trips_path);
+static void _orderStationsByTrips(CityStations new);
+
+static List _add(List list, BikeStation station);
+
 CityStations newCityStations(const char * stations_path,const char * trips_path){
     CityStations new = calloc(1, sizeof(CityStationsCDT));
     if(_loadStations(new, stations_path) == ERROR){
@@ -58,7 +60,7 @@ static int _loadStations(CityStations city, const char * stations_path){
     // - sort a list by alphabetical order
 
     FILE *fp;
-    char LINE[LINE_SIZE];
+    char line[LINE_SIZE];
 
     fp = fopen(stations_path, "r");
     if (fp == NULL)
@@ -69,11 +71,11 @@ static int _loadStations(CityStations city, const char * stations_path){
         return ERROR;
     char * field;
 
-    while (fgets(LINE, LINE_SIZE, (FILE *)fp) != NULL)
+    while (fgets(line, LINE_SIZE, (FILE *)fp) != NULL)
     {
-        field = strtok(LINE, DELIM);
+        field = strtok(line, DELIM);
         unsigned field_index;
-        int id = atoi(field);
+        size_t id = atoi(field);
 
         if (id < city->stations_length && city->stations[id] != NULL)
             // freeStation(city->stations[id]);
@@ -83,7 +85,7 @@ static int _loadStations(CityStations city, const char * stations_path){
 
         BikeStation new = newBikeStation(id, name);
         
-        for(field_index = LATITUDE; field = strtok(NULL, DELIM); field_index++)
+        for(field_index = LATITUDE; (field = strtok(NULL, DELIM)); field_index++)
         {
             switch (field_index)
             {
@@ -110,7 +112,9 @@ static int _loadStations(CityStations city, const char * stations_path){
         city->stations_by_name = _add(city->stations_by_name, new);
 
     }
-
+    if (fclose(fp) == EOF)
+        return ERROR;
+    return 0;
 }
 
 static List _add(List list, BikeStation station){
@@ -132,7 +136,7 @@ static void _processTrips(CityStations city, const char * trips_path){
     //  - saves the amount of trips per day
 }
 
-static void _orderStationsByTrips(new){
+static void _orderStationsByTrips(CityStations new){
     // TODO:
     //  - sort the stations list by number of trips
 }
