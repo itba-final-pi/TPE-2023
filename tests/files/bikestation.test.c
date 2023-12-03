@@ -20,7 +20,11 @@ main(void) {
 
     assert( getAllTips(bs0) == 0 );
     assert( getAllTips(bs1) == 0 );
-    assert( strcmp(getName(bs0), "bs0") == 0 );
+
+    char * bs0Name = getName(bs0);
+    assert( strcmp(bs0Name, "bs0") == 0 );
+    free(bs0Name);
+
     assert( COMPARE_FLOATS(getLatitude(bs0), 0.0) );
 
     for (int i = 0; i < 5; i++)
@@ -37,6 +41,7 @@ main(void) {
     assert( getMemberTrips(bs1) == 1 );
 
     freeStation(bs0);
+    freeStation(bs1);
 
     return 0;
 }
