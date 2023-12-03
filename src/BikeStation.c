@@ -20,6 +20,11 @@ BikeStation newBikeStation(size_t id, char * name) {
     return new;
 }
 
+void freeStation(BikeStation station){
+    free(station->name);
+    free(station);
+}
+
 void setLatitude(BikeStation station, double latitude) {
     station->latitude = latitude;
 }
@@ -30,11 +35,11 @@ void setLongitude(BikeStation station, double longitude){
 
 void incrementMemberTrips(BikeStation station) {
     station->memberTrips++;
-};
+}
 
 void incrementCasualTrips(BikeStation station) {
     station->casualTrips++;
-};
+}
 
 size_t getAllTips(BikeStation station) {
     return station->memberTrips + station->casualTrips;
@@ -46,4 +51,17 @@ size_t getMemberTrips(BikeStation station) {
 
 size_t getCasualTrips(BikeStation station) {
     return station->casualTrips;
+}
+
+char * getName(BikeStation station) {
+    char * aux = malloc(strlen(station->name) + 1);
+    return strcpy(aux, station->name);
+}
+
+double getLatitude(BikeStation station) {
+    return station->latitude;
+}
+
+double getLongitude(BikeStation station) {
+    return station->longitude;
 }
