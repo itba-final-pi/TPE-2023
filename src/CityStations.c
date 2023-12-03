@@ -1,6 +1,9 @@
 #include "../headers/CityStations.h"
 #include "../headers/BikeStation.h"
 
+// HELPERS
+#include "../headers/recalloc.h"
+
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -18,12 +21,7 @@ static int _loadStations(CityStations city, const char * stations_path);
 static void _processTrips(CityStations city, const char * trips_path);
 static void _orderStationsByTrips(new);
 
-List add(List list, BikeStation station){
-    Node * new = malloc(sizeof(Node));
-    new->station = station;
-    new->next = list;
-    return new;
-}
+
 
 typedef struct node{
     BikeStation station;
@@ -76,7 +74,13 @@ static int _loadStations(CityStations city, const char * stations_path){
         field = strtok(LINE, DELIM);
         unsigned field_index;
         int id = atoi(field);
+
+        if (id < city->stations_length && city->stations[id] != NULL)
+            // freeStation(city->stations[id]);
+            continue;
+
         char * name = strtok(NULL, DELIM);
+
         BikeStation new = newBikeStation(id, name);
         
         for(field_index = LATITUDE; field = strtok(NULL, DELIM); field_index++)
@@ -103,9 +107,24 @@ static int _loadStations(CityStations city, const char * stations_path){
         }
         city->stations[id] = new;
 
+        city->stations_by_name = _add(city->stations_by_name, new);
+
     }
 
 }
+
+static List _add(List list, BikeStation station){
+    if (list == NULL || strcmp(getName(list->station), getName(station)) < 0) // This is inefficient
+    {
+        List new = malloc(sizeof(Node));
+        new->station = station;
+        new->next = list;
+        return new;
+    }
+    list->next = _add(list->next, station);
+    return list;
+}
+
 
 static void _processTrips(CityStations city, const char * trips_path){
     // TODO
