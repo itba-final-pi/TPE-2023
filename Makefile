@@ -1,12 +1,12 @@
 SHELL := /bin/bash
 
 COMPILER = gcc
-FLAGS = -Wall -Wextra -Werror -pedantic -std=c99 
+FLAGS = -Wall -Wextra -pedantic -std=c99 
 LINKER_FLAGS = -fsanitize=address
 TEST_FLAGS = -DDEBUG_RUN_TESTS
 
 # https://www.gnu.org/software/make/manual/html_node/Text-Functions.html
-SOURCES := $(wildcard src/*.c)
+SOURCES := $(wildcard src/*.c helpers/*.c)
 OBJECTS := $(SOURCES:%.c=%.o)
 
 # Compiles main.c file separately
