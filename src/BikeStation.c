@@ -65,3 +65,8 @@ double getLatitude(BikeStation station) {
 double getLongitude(BikeStation station) {
     return station->longitude;
 }
+
+int compareStationsByName(BikeStation a, BikeStation b){
+	return strcmp(a->name, b->name);
+}
+

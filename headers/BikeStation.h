@@ -31,4 +31,6 @@ double getLatitude(BikeStation station);
 
 double getLongitude(BikeStation station);
 
+int compareStationsByName(BikeStation a, BikeStation b);
+
 #endif
