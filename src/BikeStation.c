@@ -69,6 +69,11 @@ double getLongitude(BikeStation station) {
 size_t getId(BikeStation station) {
     return station->id;
 }
+
+int compareStationsByName(BikeStation a, BikeStation b){
+	return strcmp(a->name, b->name);
+}
+
 int compareStationsByName(BikeStation a, BikeStation b){
 	return strcmp(a->name, b->name);
 }
