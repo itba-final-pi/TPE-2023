@@ -8,7 +8,8 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define BLOCK_STATION 1000
+// TODO: evaluate reallocating in blocks
+#define BLOCK_STATION 600
 
 #define ERROR 1
 
@@ -102,7 +103,7 @@ static int _loadStations(CityStations city, const char * stations_path){
         city->stations_count++;
         if(id >= city->stations_length)
         {
-            city->stations = recalloc(city->stations, city->stations_count, (id+1) * sizeof(BikeStation));
+            city->stations = recalloc(city->stations, city->stations_length, (id+1) * sizeof(BikeStation));
             if(city->stations == NULL)
                 return ERROR;
             city->stations_length = id+1;
