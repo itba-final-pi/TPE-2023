@@ -12,6 +12,8 @@
 
 int
 main(void) {
-
+    CityStations new = newCityStations("./tests/data/test.csv", "");
+    assert( getStationsCount(new) == 9 );
+    freeCityStations(new);
     return 0;
 }

@@ -29,13 +29,8 @@ void freeCityStations(CityStations city);
  */
 size_t getStationsCount(CityStations city);
 
-
-
-
 void printStation(CityStations city, size_t station_id);
 
 void printMemoryAddressStations(CityStations city);
-
-
 
 #endif

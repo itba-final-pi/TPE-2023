@@ -93,6 +93,8 @@ static int _loadStations(CityStations city, const char *stations_path)
     }
 
     char *field;
+    // First line with header data
+    fgets(line, LINE_SIZE, (FILE *)fp);
     while (fgets(line, LINE_SIZE, (FILE *)fp) != NULL)
     {
         field = strtok(line, DELIM);
@@ -146,8 +148,8 @@ static int _loadStations(CityStations city, const char *stations_path)
 }
 
 static List _add(List list, BikeStation station)
-{
-    if (list == NULL || strcmp(getName(list->station), getName(station)) < 0) // This is inefficient
+{   
+    if (list == NULL || compareStationsByName(list->station,station) < 0) // This is a 💎
     {
         List new = malloc(sizeof(Node));
         new->station = station;
@@ -156,6 +158,10 @@ static List _add(List list, BikeStation station)
     }
     list->next = _add(list->next, station);
     return list;
+}
+
+size_t getStationsCount(CityStations city) {
+    return city->stations_count;
 }
 
 void freeCityStations(CityStations city)
@@ -178,11 +184,13 @@ void freeCityStations(CityStations city)
 void printStation(CityStations city, size_t station_id)
 {
     BikeStation station = city->stations[station_id];
+    char * name = getName(station);
     printf("Station memory address: %p\n", (void *)station);
     printf("Station ID: %lu\n", getId(station));
-    printf("Station Name: %s\n", getName(station));
+    printf("Station Name: %s\n", name);
     printf("Station Latitude: %f\n", getLatitude(station));
     printf("Station Longitude: %f\n", getLongitude(station));
+    free(name);
 }
 
 void printMemoryAddressStations(CityStations city)
@@ -204,12 +212,12 @@ void printMemoryAddressStations(CityStations city)
 //     //  - sort the stations list by number of trips
 // }
 
-int main(void)
-{
-    CityStations city = newCityStations("../temp/stationsMON.csv", "../temp/bikesMON.csv");
-    printStation(city, 0);
-    printMemoryAddressStations(city);
-    freeCityStations(city);
+// int main(void)
+// {
+//     CityStations city = newCityStations("../temp/stationsMON.csv", "../temp/bikesMON.csv");
+//     printStation(city, 520);
+//     printMemoryAddressStations(city);
+//     freeCityStations(city);
 
-    return 0;
-}
+//     return 0;
+// }
