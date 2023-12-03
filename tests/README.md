@@ -48,3 +48,22 @@ main(void) {
     return 0;
 }
 ```
+
+## Speed
+
+### Compilation
+
+At this moment, speed is test manually by using [hyperfine](https://github.com/sharkdp/hyperfine)
+
+```bash
+hyperfine --prepare 'sync; echo 3 | make clean' \
+--warmup 3 \
+--export-markdown speed.md \
+'gcc -Wall -pedantic -std=c99 -Werror -fsanitize=address main.c ./src/BikeStation.c ./src/CityStations.c -Iheaders -o Binary.out' \
+'make all -j 20' \
+```
+
+>[!WARNING]
+>`make all` is about 40% slower than compiling with GCC
+>
+>However, calling make with `-j 20` makes both take almost the exact amount of time, which leads to believe that GCC is already taking advantage of multiple cores and processing files in parallel. Needs to be investigated #8.
