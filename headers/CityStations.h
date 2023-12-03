@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include "BikeStation.h"
 
 #ifndef _city_stations_h
 #define _city_stations_h
@@ -12,7 +13,7 @@ typedef struct CityStationsCDT * CityStations;
  * @param trips_path path to the trips file 
  * @return CityStations TAD, NULL if an error ocurred
  */
-CityStations newCityStations(const char * stations_path,const char * trips_path);
+CityStations newCityStations(const char * stations_path, const char * trips_path);
 
 /**
  * frees the memory allocated for the CityStations TAD
@@ -29,8 +30,23 @@ void freeCityStations(CityStations city);
  */
 size_t getStationsCount(CityStations city);
 
-void printStation(CityStations city, size_t station_id);
+/**
+ * adds a station to the city
+ * 
+ * @param city CityStations TAD
+ * @param station station to add
+ * @note the station isn't copied, the TAD will keep a reference to it
+ * @return 0 if the station was added, 1 if an error ocurred
+ */
+int addStation(CityStations city, BikeStation station);
 
-void printMemoryAddressStations(CityStations city);
+/**
+ * returns the station with the given id
+ * 
+ * @param city CityStations TAD
+ * @param id id of the station
+ * @return station with the given id, NULL if it doesn't exist
+ */
+BikeStation getStation(CityStations city, size_t id);
 
 #endif

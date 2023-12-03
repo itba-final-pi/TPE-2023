@@ -1,20 +1,18 @@
-#include "../headers/CityStations.h"
-#include "../headers/BikeStation.h"
+#include "CityStations.h"
+#include "BikeStation.h"
 
 // HELPERS
-#include "../headers/recalloc.h"
+#include "recalloc.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: evaluate reallocating in blocks
-#define BLOCK_STATION 600
-
-#define ERROR 1
-
-#define LINE_SIZE 255
-#define DELIM ";"
+typedef enum
+{
+    OK = 0,
+    ERROR
+} Status;
 
 typedef enum
 {
@@ -23,6 +21,24 @@ typedef enum
     LATITUDE,
     LONGITUDE
 } Fields;
+
+#define NUMBER_OF_FIELDS 4
+
+#define MON
+
+#ifdef MON
+static const int fields[NUMBER_OF_FIELDS] = {ID, NAME, LATITUDE, LONGITUDE};
+#elif NYC
+static const int fields[NUMBER_OF_FIELDS] = {NAME, LONGITUDE, LATITUDE, ID};
+#else
+#error "No city was specified on build target"
+#endif
+
+// TODO: evaluate reallocating in blocks
+#define BLOCK_STATION 600
+
+#define LINE_SIZE 255
+#define DELIM ";"
 
 typedef struct node
 {
@@ -36,37 +52,35 @@ typedef struct CityStationsCDT
 {
     BikeStation *stations;
     size_t trips_by_day[7];
-    // TODO: add list of stations sorted by alphabetical order
     List stations_by_name;
-    // TODO: add vec of stations sorted by number of trips
-    List stations_by_trips; // ? Not Sure
-    size_t stations_length;
+    BikeStation *stations_by_trips;
+    size_t stations_max_length;
     size_t stations_count;
 } CityStationsCDT;
 
-static int _loadStations(CityStations city, const char *stations_path);
-// static void _processTrips(CityStations city, const char * trips_path);
-// static void _orderStationsByTrips(CityStations new);
+static int loadStations(CityStations city, const char *stations_path);
+// static void processTrips(CityStations city, const char * trips_path);
+// static void orderStationsByTrips(CityStations new);
 
-static List _add(List list, BikeStation station);
+static List addRecursive(List list, BikeStation station);
 
 CityStations newCityStations(const char *stations_path, const char *trips_path)
 {
-    printf("Loading stations...\n");
-    printf("Stations path: %s\n", stations_path);
-    printf("Trips path: %s\n", trips_path);
     CityStations new = calloc(1, sizeof(CityStationsCDT));
-    if (_loadStations(new, stations_path) == ERROR)
+    if (new == NULL)
+        return NULL;
+    if (loadStations(new, stations_path) == ERROR)
     {
         freeCityStations(new);
         return NULL;
     }
-    // _processTrips(new, trips_path);
-    // _orderStationsByTrips(new);
+    trips_path = trips_path; // TODO
+    // processTrips(new, trips_path);
+    // orderStationsByTrips(new);
     return new;
 }
 
-static int _loadStations(CityStations city, const char *stations_path)
+static int loadStations(CityStations city, const char *stations_path)
 {
     // TODO
     // - open stations file and load the stations in a vector of BikeStation
@@ -77,97 +91,122 @@ static int _loadStations(CityStations city, const char *stations_path)
 
     fp = fopen(stations_path, "r");
     if (fp == NULL)
-    {
-        perror("Error opening file");
         return ERROR;
-    }
+
     city->stations = calloc(BLOCK_STATION, sizeof(BikeStation));
-    printf("Stations memory address: %p\n", (void *)city->stations);
-    printf("Stations memory address[0]: %p\n", (void *)city->stations[0]);
-
-
     if (city->stations == NULL)
-    {
-        perror("Error allocating memory");
         return ERROR;
-    }
+
+    city->stations_max_length = BLOCK_STATION;
 
     char *field;
+
     // First line with header data
     fgets(line, LINE_SIZE, (FILE *)fp);
+
+    // Iterate over the stations in the file
     while (fgets(line, LINE_SIZE, (FILE *)fp) != NULL)
     {
-        field = strtok(line, DELIM);
         unsigned field_index;
-        size_t id = atoi(field);
+        size_t id;
+        char *name;
+        double latitude, longitude;
 
-        if (id < city->stations_length && city->stations[id] != NULL)
-            // freeStation(city->stations[id]);
-            continue;
-
-        char *name = strtok(NULL, DELIM);
-
-        BikeStation new = newBikeStation(id, name);
-
-        for (field_index = LATITUDE; (field = strtok(NULL, DELIM)); field_index++)
+        field = strtok(line, DELIM);
+        for (field_index = ID; field; field_index++,field = strtok(NULL, DELIM))
         {
-            switch (field_index)
+            switch (fields[field_index])
             {
+            case ID:
+                id = strtoul(field, NULL, 10);
+                break;
+            case NAME:
+                name = field;
+                break;
             case LATITUDE:
-                setLatitude(new, atof(field));
+                latitude = atof(field);
                 break;
             case LONGITUDE:
-                setLongitude(new, atof(field));
+                longitude = atof(field);
                 break;
             default:
                 break;
             }
         }
-        city->stations_count++;
-        if (id >= city->stations_length)
-        {
-            city->stations = recalloc(city->stations, city->stations_length * sizeof(BikeStation) , (id + 1) * sizeof(BikeStation));
-            if (city->stations == NULL)
-            {
-                perror("Error allocating memory for stations");
-                return ERROR;
-            }
-            city->stations_length = id + 1;
-        }
-        city->stations[id] = new;
 
-        city->stations_by_name = _add(city->stations_by_name, new);
+        /*
+         ! Case when the station is already in the vector:
+         ! Possible solutions:
+         !  - ignore it
+         !  - free the station and replace it
+        */
+        if (id < city->stations_max_length && city->stations[id] != NULL)
+            continue;
+
+        BikeStation new = newBikeStation(id, name);
+        if (new == NULL)
+            return ERROR;
+        setLatitude(new, latitude);
+        setLongitude(new, longitude);
+
+        if (addStation(city, new) == ERROR)
+            return ERROR;
     }
-    
+
     if (fclose(fp) == EOF)
-    {
-        perror("Error closing file");
         return ERROR;
-    }
+
     return 0;
 }
 
-static List _add(List list, BikeStation station)
-{   
-    if (list == NULL || compareStationsByName(list->station,station) < 0) // This is a 💎
+static List addRecursive(List list, BikeStation station)
+{
+    if (list == NULL || compareStationsByName(list->station, station) < 0)
     {
         List new = malloc(sizeof(Node));
         new->station = station;
         new->next = list;
         return new;
     }
-    list->next = _add(list->next, station);
+    list->next = addRecursive(list->next, station);
     return list;
 }
 
-size_t getStationsCount(CityStations city) {
+size_t getStationsCount(CityStations city)
+{
     return city->stations_count;
+}
+
+int addStation(CityStations city, BikeStation station)
+{
+    size_t id = getId(station);
+
+    if (id >= city->stations_max_length)
+    {
+        city->stations = recalloc(city->stations, city->stations_max_length * sizeof(BikeStation), (id + BLOCK_STATION) * sizeof(BikeStation));
+        if (city->stations == NULL)
+            return ERROR;
+        city->stations_max_length = id + BLOCK_STATION;
+    }
+
+    city->stations[id] = station;
+
+    city->stations_by_name = addRecursive(city->stations_by_name, station);
+    city->stations_count++;
+    return 0;
+}
+
+BikeStation getStation(CityStations city, size_t id)
+{
+    if (id >= city->stations_max_length)
+        return NULL;
+    return city->stations[id];
 }
 
 void freeCityStations(CityStations city)
 {
     size_t i;
-    for (i = 0; i < city->stations_length; i++)
+    for (i = 0; i < city->stations_max_length; i++)
         if (city->stations[i] != NULL)
             freeStation(city->stations[i]);
     free(city->stations);
@@ -181,43 +220,15 @@ void freeCityStations(CityStations city)
     free(city);
 }
 
-void printStation(CityStations city, size_t station_id)
-{
-    BikeStation station = city->stations[station_id];
-    char * name = getName(station);
-    printf("Station memory address: %p\n", (void *)station);
-    printf("Station ID: %lu\n", getId(station));
-    printf("Station Name: %s\n", name);
-    printf("Station Latitude: %f\n", getLatitude(station));
-    printf("Station Longitude: %f\n", getLongitude(station));
-    free(name);
-}
-
-void printMemoryAddressStations(CityStations city)
-{
-    size_t i;
-    for (i = 0; i < city->stations_length; i++)
-        // if (city->stations[i] != NULL)
-            printf("Memory Address[%lu]: %p\n", i, (void *)city->stations[i]);
-}
-
-// static void _processTrips(CityStations city, const char * trips_path){
+// static void processTrips(CityStations city, const char *trips_path)
+// {
 //     // TODO
 //     //  - saves the amount of trips per station and the first one made
 //     //  - saves the amount of trips per day
 // }
 
-// static void _orderStationsByTrips(CityStations new){
+// static void orderStationsByTrips(CityStations new)
+// {
 //     // TODO:
 //     //  - sort the stations list by number of trips
-// }
-
-// int main(void)
-// {
-//     CityStations city = newCityStations("../temp/stationsMON.csv", "../temp/bikesMON.csv");
-//     printStation(city, 520);
-//     printMemoryAddressStations(city);
-//     freeCityStations(city);
-
-//     return 0;
 // }
