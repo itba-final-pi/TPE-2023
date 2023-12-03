@@ -65,3 +65,7 @@ double getLatitude(BikeStation station) {
 double getLongitude(BikeStation station) {
     return station->longitude;
 }
+
+size_t getId(BikeStation station) {
+    return station->id;
+}

@@ -31,4 +31,6 @@ double getLatitude(BikeStation station);
 
 double getLongitude(BikeStation station);
 
+size_t getId(BikeStation station);
+
 #endif
