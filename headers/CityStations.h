@@ -7,13 +7,11 @@
 typedef struct CityStationsCDT * CityStations;
 
 /**
- * creates a CityStations TAD and loads the stations and processes the trips
+ * creates a CityStations
  * 
- * @param stations_path path to the stations file
- * @param trips_path path to the trips file 
  * @return CityStations TAD, NULL if an error ocurred
  */
-CityStations newCityStations(const char * stations_path, const char * trips_path);
+CityStations newCityStations(void);
 
 /**
  * frees the memory allocated for the CityStations TAD
@@ -39,6 +37,9 @@ size_t getStationsCount(CityStations city);
  * @return 0 if the station was added, 1 if an error ocurred
  */
 int addStation(CityStations city, BikeStation station);
+
+// To replace addStation -- binary trees needed
+int loadStation(CityStations city, const char * station_info);
 
 /**
  * returns the station with the given id

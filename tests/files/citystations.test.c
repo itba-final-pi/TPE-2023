@@ -9,6 +9,7 @@
 
 #include "BikeStation.h"
 #include "CityStations.h"
+#include "FileHandler.h"
 
 int
 main(void) {
@@ -17,7 +18,17 @@ main(void) {
     setLatitude(station, 45.5110837);
     setLongitude(station, -73.5679775);
 
-    CityStations new = newCityStations("./Datasets Alumnos SMALL/stationsMON.csv", "");
+    CityStations new = newCityStations();
+    
+    FileHandler file = newFileHandler("./Datasets Alumnos SMALL/stationsMON.csv");
+
+    char * line = getNextLine(file); // ignore header line
+
+    // While there's a line, AND it is not empty
+    while( hasNextLine(file) && (line = getNextLine(file)) ) {
+        loadStation(new, line);
+    }
+
     assert( getStationsCount(new) == 9 );
     assert( getStation(new, 1286) != NULL );
     assert( compareStationsByName(getStation(new, 1286), station) == 0 );
@@ -25,7 +36,7 @@ main(void) {
     assert( getLatitude(getStation(new, 1286)) == getLatitude(station) );
 
     freeStation(station);
-
     freeCityStations(new);
+    freeFileHandler(file);
     return 0;
 }

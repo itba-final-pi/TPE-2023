@@ -3,6 +3,7 @@
 
 // HELPERS
 #include "recalloc.h"
+#include "FileHandler.h"
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -56,65 +57,30 @@ typedef struct CityStationsCDT
     size_t stations_count;
 } CityStationsCDT;
 
-static int loadStations(CityStations city, const char *stations_path);
 // static void processTrips(CityStations city, const char * trips_path);
 // static void orderStationsByTrips(CityStations new);
 
 static List addRecursive(List list, BikeStation station);
 
-CityStations newCityStations(const char *stations_path, const char *trips_path)
-{
+CityStations newCityStations(void) {
     CityStations new = calloc(1, sizeof(CityStationsCDT));
+
     if (new == NULL)
         return NULL;
-    if (loadStations(new, stations_path) == ERROR)
-    {
-        freeCityStations(new);
-        return NULL;
-    }
-    trips_path = trips_path; // TODO
-    // processTrips(new, trips_path);
-    // orderStationsByTrips(new);
+
     return new;
 }
 
-static int loadStations(CityStations city, const char *stations_path)
-{
-    // TODO
-    // - open stations file and load the stations in a vector of BikeStation
-    // - sort a list by alphabetical order
+int loadStation(CityStations city, const char * station_info) {
+    unsigned field_index;
+    size_t id;
+    char *name;
+    double latitude, longitude;
 
-    FILE *fp;
-    char line[LINE_SIZE];
-
-    fp = fopen(stations_path, "r");
-    if (fp == NULL)
-        return ERROR;
-
-    city->stations = calloc(BLOCK_STATION, sizeof(BikeStation));
-    if (city->stations == NULL)
-        return ERROR;
-
-    city->stations_max_length = BLOCK_STATION;
-
-    char *field;
-
-    // First line with header data
-    fgets(line, LINE_SIZE, (FILE *)fp);
-
-    // Iterate over the stations in the file
-    while (fgets(line, LINE_SIZE, (FILE *)fp) != NULL)
-    {
-        unsigned field_index;
-        size_t id;
-        char *name;
-        double latitude, longitude;
-
-        field = strtok(line, DELIM);
-        for (field_index = ID; field; field_index++,field = strtok(NULL, DELIM))
-        {
-            switch (fields[field_index])
-            {
+    char * field = strtok((char *) station_info, DELIM);
+    // Iterate over the columns on the file
+    for (field_index = ID; field; field_index++,field = strtok(NULL, DELIM)) {
+        switch (fields[field_index]) {
             case ID:
                 id = strtoul(field, NULL, 10);
                 break;
@@ -129,29 +95,18 @@ static int loadStations(CityStations city, const char *stations_path)
                 break;
             default:
                 break;
-            }
         }
-
-        /*
-         ! Case when the station is already in the vector:
-         ! Possible solutions:
-         !  - ignore it
-         !  - free the station and replace it
-        */
-        if (id < city->stations_max_length && city->stations[id] != NULL)
-            continue;
-
-        BikeStation new = newBikeStation(id, name);
-        if (new == NULL)
-            return ERROR;
-        setLatitude(new, latitude);
-        setLongitude(new, longitude);
-
-        if (addStation(city, new) == ERROR)
-            return ERROR;
     }
 
-    if (fclose(fp) == EOF)
+    BikeStation new = newBikeStation(id, name);
+
+    if (new == NULL)
+        return ERROR;
+
+    setLatitude(new, latitude);
+    setLongitude(new, longitude);
+
+    if (addStation(city, new) == ERROR)
         return ERROR;
 
     return 0;
@@ -229,3 +184,4 @@ void freeCityStations(CityStations city)
 // {
 //     // TODO:
 //     //  - sort the stations list by number of trips
+// }
