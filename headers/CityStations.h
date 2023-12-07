@@ -49,4 +49,8 @@ int addStation(CityStations city, BikeStation station);
  */
 BikeStation getStation(CityStations city, size_t id);
 
+void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN]);
+
+void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN]){
+
 #endif

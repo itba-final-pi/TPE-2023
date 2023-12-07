@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-
+#include <time.h>
 
 #ifdef MON
 static const int fields_station[NUMBER_OF_FIELDS_S] = {ID, NAME, LATITUDE, LONGITUDE};
@@ -37,7 +37,8 @@ typedef Node *List;
 typedef struct CityStationsCDT
 {
     BikeStation *stations;
-    size_t trips_by_day[7];
+    size_t started_trips_by_day[7];
+    size_t ended_trips_by_day[7];
     List stations_by_name;
     BikeStation *stations_by_trips;
     size_t stations_max_length;
@@ -206,110 +207,126 @@ void freeCityStations(CityStations city)
     free(city);
 }
 
- static int processTrips(CityStations city, const char *trips_path)
- {
-    // TODO
-    // - open trips file and count for each station and day of the week the trips made
-    // - save the first trip made for each station
-    //
+static int processTrips(CityStations city, const char *trips_path)
+{
+   // TODO
+   // - open trips file and count for each station and day of the week the trips made
+   // - save the first trip made for each station
+   //
 
-    // TODO
-    //  - saves the amount of trips per station and the first one made
-    //  	- checks if both the starting and returning stations are in stations
-    //  	- if not, it ignores them
-    //  	- checks if the trip starts and ends at the same station
-    //  	- if it does, it's not considered when checking for the oldest trip
-    //  - saves the amount of trips per day
-    //  	- increments the position by one in the coresponding day  
+   // TODO
+   //  - saves the amount of trips per station and the first one made
+   //  	- checks if both the starting and returning stations are in stations
+   //  	- if not, it ignores them
+   //  	- checks if the trip starts and ends at the same station
+   //  	- if it does, it's not considered when checking for the oldest trip
+   //  - saves the amount of trips per day
+   //  	- increments the position by one in the coresponding day  
 
-    if (city == NULL)
-        return ERROR;
-    
-    if (trips_path == NULL)
-        return ERROR;
+   if (city == NULL)
+       return ERROR;
+   
+   if (trips_path == NULL)
+       return ERROR;
 
-    FILE *fp;
-    char line[LINE_SIZE];
+   FILE *fp;
+   char line[LINE_SIZE];
 
-    fp = fopen(trips_path, "r");
-    if (fp == NULL)
-        return ERROR;
+   fp = fopen(trips_path, "r");
+   if (fp == NULL)
+       return ERROR;
 
-    char *field;
+   char *field;
 
-    // First line with header data
-    fgets(line, LINE_SIZE, (FILE *)fp);
+   // First line with header data
+   fgets(line, LINE_SIZE, (FILE *)fp);
 
-    // Iterate over the stations in the file
-    while (fgets(line, LINE_SIZE, (FILE *)fp) != NULL)
-    {
-        unsigned field_index;
-        char * start_date;
-        char * end_date;
-        size_t start_station_id;
-        size_t end_station_id;
-        size_t is_member; // ! TODO: Make it work for NYC
+   // Iterate over the stations in the file
+   while (fgets(line, LINE_SIZE, (FILE *)fp) != NULL)
+   {
+       unsigned field_index;
+       char * start_date;
+       char * end_date;
+       size_t start_station_id;
+       size_t end_station_id;
+       size_t is_member; // ! TODO: Make it work for NYC
 
-        field = strtok(line, DELIM);
-        for (field_index = START_DATE; field; field_index++,field = strtok(NULL, DELIM))
-        {
-            switch (fields_trips[field_index])
-            {
-            case START_DATE:
-                start_date = field;
-                break;
-            case START_STATION_ID:
-                start_station_id = strtoul(field, NULL, 10);
-                break;
-            case END_DATE:
-                end_date = field;
-                break;
-            case END_STATION_ID:
-                end_station_id = strtoul(field, NULL, 10);
-                break;
-            case IS_MEMBER:
-                is_member = strtoul(field, NULL, 10);
-                break;
-            default:
-                break;
-            }
-        }
+       field = strtok(line, DELIM);
+       for (field_index = START_DATE; field; field_index++,field = strtok(NULL, DELIM))
+       {
+           switch (fields_trips[field_index])
+           {
+           case START_DATE:
+               start_date = field;
+               break;
+           case START_STATION_ID:
+               start_station_id = strtoul(field, NULL, 10);
+               break;
+           case END_DATE:
+               end_date = field;
+               break;
+           case END_STATION_ID:
+               end_station_id = strtoul(field, NULL, 10);
+               break;
+           case IS_MEMBER:
+               is_member = strtoul(field, NULL, 10);
+               break;
+           default:
+               break;
+           }
+       }
 
-		// Now that the values are saved on vars, set the structs:
-		
-		BikeStation start_station = city->stations[start_station_id];
-		BikeStation end_station = city->stations[end_station_id];
-		
-		// Both stations should exist in our struct
-		if(start_station && end_station) {
-			// Checks that the trip is not circular and the date is older
-			if(start_station_id != end_station_id && isOlderTrip(start_station, start_date)){
-				setOldestTrip(start_station, end_station, start_date); 
-			}
-			if(is_member){
-				incrementMemberTrips(start_station);
-			} else {
-				incrementCasualTrips(start_station);
-			}
-		}
+   	// Now that the values are saved on vars, set the structs:
+   	
+   	BikeStation start_station = city->stations[start_station_id];
+   	BikeStation end_station = city->stations[end_station_id];
+   	
+   	// Both stations should exist in our struct
+   	if(start_station && end_station) {
+   		// Checks that the trip is not circular and the date is older
+   		if(start_station_id != end_station_id && isOlderTrip(start_station, start_date)){
+   			setOldestTrip(start_station, end_station, start_date); 
+   		}
+   		if(is_member){
+   			incrementMemberTrips(start_station);
+   		} else {
+   			incrementCasualTrips(start_station);
+   		}
+   	}
 
-        start_date = start_date;
-        end_date = end_date;
-        start_station_id = start_station_id;
-        end_station_id = end_station_id;
-        is_member = is_member;
-    }
+       start_date = start_date;
+       end_date = end_date;
+       start_station_id = start_station_id;
+       end_station_id = end_station_id;
+       is_member = is_member;
+   }
 
 
-    if (fclose(fp) == EOF)
-        return ERROR;
+   if (fclose(fp) == EOF)
+       return ERROR;
 
-    return 0;
+   return 0;
 
- }
+}
 
 // static void orderStationsByTrips(CityStations new)
 // {
 //     // TODO:
 //     //  - sort the stations list by number of trips
 // }
+
+
+void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN]){
+	struct tm date_time;
+	strptime(date, "%Y-%m-%d", &date_time); // %H:%M:%S
+	city->started_trips_by_day[date_time.tm_wday]++;
+}
+
+void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN]){
+	struct tm date_time;
+	strptime(date, "%Y-%m-%d", &date_time); // %H:%M:%S
+	city->ended_trips_by_day[date_time.tm_wday]++;
+}
+
+
+
