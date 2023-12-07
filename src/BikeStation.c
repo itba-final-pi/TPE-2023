@@ -1,7 +1,6 @@
-// @todo #2 Refactor import paths
 #include <string.h>
 
-#include "../headers/BikeStation.h"
+#include "BikeStation.h"
 
 typedef struct BikeStationCDT {
     size_t id;
