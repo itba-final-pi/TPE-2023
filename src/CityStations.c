@@ -11,9 +11,11 @@
 
 
 #ifdef MON
-static const int fields[NUMBER_OF_FIELDS] = {ID, NAME, LATITUDE, LONGITUDE};
+static const int fields_station[NUMBER_OF_FIELDS_S] = {ID, NAME, LATITUDE, LONGITUDE};
+static const int fields_trips[NUMBER_OF_FIELDS_T] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, IS_MEMBER};
 #elif defined(NYC)
-static const int fields[NUMBER_OF_FIELDS] = {NAME, LONGITUDE, LATITUDE, ID};
+static const int fields_station[NUMBER_OF_FIELDS] = {NAME, LONGITUDE, LATITUDE, ID};
+static const int fields_trips[NUMBER_OF_FIELDS] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, RIDEABLE_TYPE, IS_MEMBER};
 #else
 #error "No city was specified on build target"
 #endif
@@ -99,7 +101,7 @@ static int loadStations(CityStations city, const char *stations_path)
         field = strtok(line, DELIM);
         for (field_index = ID; field; field_index++,field = strtok(NULL, DELIM))
         {
-            switch (fields[field_index])
+            switch (fields_station[field_index])
             {
             case ID:
                 id = strtoul(field, NULL, 10);
@@ -235,50 +237,43 @@ void freeCityStations(CityStations city)
     while (fgets(line, LINE_SIZE, (FILE *)fp) != NULL)
     {
         unsigned field_index;
-        size_t id;
-        char *name;
-        double latitude, longitude;
+        char * start_date;
+        char * end_date;
+        size_t start_station_id;
+        size_t end_station_id;
+        size_t is_member; // ! TODO: Make it work for NYC
 
         field = strtok(line, DELIM);
-        for (field_index = ID; field; field_index++,field = strtok(NULL, DELIM))
+        for (field_index = START_DATE; field; field_index++,field = strtok(NULL, DELIM))
         {
-            switch (fields[field_index])
+            switch (fields_trips[field_index])
             {
-            case ID:
-                id = strtoul(field, NULL, 10);
+            case START_DATE:
+                start_date = field;
                 break;
-            case NAME:
-                name = field;
+            case START_STATION_ID:
+                start_station_id = strtoul(field, NULL, 10);
                 break;
-            case LATITUDE:
-                latitude = atof(field);
+            case END_DATE:
+                end_date = field;
                 break;
-            case LONGITUDE:
-                longitude = atof(field);
+            case END_STATION_ID:
+                end_station_id = strtoul(field, NULL, 10);
+                break;
+            case IS_MEMBER:
+                is_member = strtoul(field, NULL, 10);
                 break;
             default:
                 break;
             }
         }
-
-        /*
-         ! Case when the station is already in the vector:
-         ! Possible solutions:
-         !  - ignore it
-         !  - free the station and replace it
-        */
-        if (id < city->stations_max_length && city->stations[id] != NULL)
-            continue;
-
-        BikeStation new = newBikeStation(id, name);
-        if (new == NULL)
-            return ERROR;
-        setLatitude(new, latitude);
-        setLongitude(new, longitude);
-
-        if (addStation(city, new) == ERROR)
-            return ERROR;
+        start_date = start_date;
+        end_date = end_date;
+        start_station_id = start_station_id;
+        end_station_id = end_station_id;
+        is_member = is_member;
     }
+
 
     if (fclose(fp) == EOF)
         return ERROR;
