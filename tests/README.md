@@ -49,6 +49,48 @@ main(void) {
 }
 ```
 
+## Datasets
+
+In order to get the datasets used by tests, you may need to run the following commands:
+
+```sh
+curl -o data.zip "$DATASET_URL"
+unzip data.zip -d "DATASET_NAME"
+```
+
+Where the variables take on one of the following sets of values:
+
+| Dataset  | $DATASET_NAME          | $DATASET_URL                                                               |
+|----------|------------------------|----------------------------------------------------------------------------|
+| Small    | Datasets Alumnos SMALL | https://storage.googleapis.com/datasets-tpe/Datasets%20Alumnos%20SMALL.zip |
+| Complete | Datasets Alumnos       | https://storage.googleapis.com/datasets-tpe/Datasets\%20Alumnos.zip         |
+
+In the unlikely event [`us-east1` is down](https://status.cloud.google.com/regional/americas) you may get the complete dataset from the original source
+
+<details>
+
+<summary>Follow these steps to build `Datasets Alumnos Small`</summary>
+
+Download the complete source to the repo's parent directory, then run the following script
+
+```sh
+dir="../Datasets Alumnos"
+files=`ls -1 "$dir"`
+
+for file in $files
+do
+    echo "$file"
+    if [[ -f "$dir/$file" ]]
+    # This skips the "Mas" folder
+    then
+        head "$dir/$file" > "$dir SMALL/$file"
+    fi
+done
+
+```
+
+</details>
+
 ## Speed
 
 ### Compilation
