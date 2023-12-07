@@ -59,7 +59,7 @@ typedef struct CityStationsCDT
 } CityStationsCDT;
 
 static int loadStations(CityStations city, const char *stations_path);
-// static void processTrips(CityStations city, const char * trips_path);
+static int processTrips(CityStations city, const char * trips_path);
 // static void orderStationsByTrips(CityStations new);
 
 static List addRecursive(List list, BikeStation station);
@@ -75,7 +75,7 @@ CityStations newCityStations(const char *stations_path, const char *trips_path)
         return NULL;
     }
     trips_path = trips_path; // TODO
-    // processTrips(new, trips_path);
+    processTrips(new, trips_path);
     // orderStationsByTrips(new);
     return new;
 }
@@ -220,11 +220,17 @@ void freeCityStations(CityStations city)
     free(city);
 }
 
- static void processTrips(CityStations city, const char *trips_path)
+ static int processTrips(CityStations city, const char *trips_path)
  {
     // TODO
     // - open trips file and count for each station and day of the week the trips made
     // - save the first trip made for each station
+
+    if (city == NULL)
+        return ERROR;
+    
+    if (trips_path == NULL)
+        return ERROR;
 
     FILE *fp;
     char line[LINE_SIZE];

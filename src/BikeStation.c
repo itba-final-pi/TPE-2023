@@ -85,6 +85,8 @@ BikeStation getOldestTripEndStation(BikeStation station) {
 }
 
 char * getOldestTripDate(BikeStation station) {
+    if (station->oldestTrip.startedAt[0] == '\0')
+        return NULL;
     char * aux = malloc(strlen(station->oldestTrip.startedAt) + 1);
     return strcpy(aux, station->oldestTrip.startedAt);
 }
