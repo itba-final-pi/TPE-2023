@@ -4,11 +4,7 @@ ERROR=0
 
 # Check if the code for the main source compiles
 # The output binary isn't tested, the source is just checked to make sure it compiles
-# @todo Replace with Makefile
-gcc "../main.c" "../src/BikeStation.c" \
--I. -I../headers \
--Wall -Wextra -Werror -pedantic -std=c99 -fsanitize=address -I. -I../src/ -I../headers -o test.out
-
+make all
 GCC_EXITC=$?
 
 if [[ $GCC_EXITC -ne 0 ]]
@@ -17,17 +13,16 @@ then
     ERROR=2
 fi
 
-rm -f test.out
+make clean
 
-for file in `ls -1 files | egrep ".*.test.c"`
+test_files=`ls -1 ./tests/files | egrep ".*.test.c"`
+
+for file in $test_files
 do
     echo "$file" | egrep '.*template.*' -q
     if [[ "$?" -ne 0 && $ERROR -eq 0 ]]
     then
-        # @todo Replace with Makefile
-        gcc "./files/$file" "../src/BikeStation.c" \
-        -I. -I../headers \
-        -DDEBUG_RUN_TESTS -Wall -Wextra -Werror -pedantic -std=c99  -fsanitize=address -o test.out
+        make test file="./tests/files/$file"
 
         GCC_EXITC=$?
         if [ $GCC_EXITC -ne 0 ]
@@ -39,9 +34,9 @@ do
         # If the code compiled succesfully, then try to execute it
         if [[ $ERROR -eq 0 ]]
         then
-            ./test.out
+            ./tests/test.out
             GCC_EXEC=$?
-            rm -f ./test.out
+            rm -f ./tests/test.out
             if [ $GCC_EXEC -ne 0 ]
             then
                 echo "::error file={$file}::Code failed at runtime on test: $file"
@@ -50,7 +45,7 @@ do
             let TOTAL_TESTS=TOTAL_TESTS+1
         fi
 
-        rm -f ./test.out
+        rm -f ./tests/test.out
 
     fi
 done

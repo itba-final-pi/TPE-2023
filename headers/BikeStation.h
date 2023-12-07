@@ -31,6 +31,8 @@ double getLatitude(BikeStation station);
 
 double getLongitude(BikeStation station);
 
+size_t getId(BikeStation station);
+
 int compareStationsByName(BikeStation a, BikeStation b);
 
 #endif

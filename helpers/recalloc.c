@@ -6,8 +6,8 @@ void * recalloc(void * vec, size_t len, size_t new_len){
 
 	if(new == NULL) return NULL;
 
-	for(int i = len; i < new_len; i++){
-		new[i] = 0;
+	for(size_t i = len; i < new_len; i++){
+		((char *)new)[i] = 0;
 	}
 	
 	return new;

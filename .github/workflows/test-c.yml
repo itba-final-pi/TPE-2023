@@ -1,6 +1,10 @@
 # Github Action to Compile and Test code from the project
 name: Compile & Test C
 
+env:
+  DATASET_URL: https://storage.googleapis.com/datasets-tpe/Datasets%20Alumnos%20SMALL.zip
+  DATASET_NAME: Datasets Alumnos SMALL
+
 # Controls when the workflow will run
 on:
   # Triggers the workflow on push or pull request events but only for the "main" branch
@@ -41,13 +45,24 @@ jobs:
         with:
           ref: ${{ github.ref }}
 
+      - uses: actions/cache@v3
+        id: datasets-alumnos
+        with:
+          path: |
+            ./${{ env.DATASET_NAME }}
+          key: ${{ runner.os }}
+    
+      - name: Install Datasets
+        if: steps.datasets-alumnos.outputs.cache-hit != 'true'
+        run: |
+          curl -o data.zip ${{ env.DATASET_URL }}
+          unzip data.zip -d "${{ env.DATASET_NAME }}"
+
       - name: Build and test
         shell: bash {0}
         run: |
-          chmod 666 /dev/null
-          cd ./tests
-          OS=${{ matrix.os }}
-          source ./test.sh
+          ls "./${{ env.DATASET_NAME }}"
+          source ./tests/test.sh
 
           if [[ "$ERROR" -eq "0" ]]
           then
@@ -68,10 +83,12 @@ jobs:
           env:
             BRANCH_NAME: ${{ github.head_ref || github.ref_name }} 
           run: |
-            cd ./tests
-            sed -i "s/\$GIT_SECRET/${{ secrets.ACCESS_TOKEN }}/g" pampero.sh
-            sed -i "s/\$BRANCH_NAME/$BRANCH_NAME/g" pampero.sh
-            sshpass -p "${{ secrets.ITBA_PWD_PAMPERO }}" ssh -o StrictHostKeyChecking=no ${{ secrets.ITBA_USR_PAMPERO }}@pampero.itba.edu.ar "$(cat pampero.sh)"
+            # Replace bash variables on the pampero.sh file with their intended values
+            sed -i "s/\$GIT_SECRET/${{ secrets.ACCESS_TOKEN }}/g" ./tests/pampero.sh
+            sed -i "s/\$BRANCH_NAME/$BRANCH_NAME/g" ./tests/pampero.sh
+            sed -i "s/\$DATASET/${{ env.DATASET_NAME }}/g" ./tests/pampero.sh
+            # SSH into Pampero
+            sshpass -p "${{ secrets.ITBA_PWD_PAMPERO }}" ssh -o StrictHostKeyChecking=no ${{ secrets.ITBA_USR_PAMPERO }}@pampero.itba.edu.ar "$(cat ./tests/pampero.sh)"
             PAMPERO_EXITC=$?
             if [ $PAMPERO_EXITC -ne 0 ]
             then

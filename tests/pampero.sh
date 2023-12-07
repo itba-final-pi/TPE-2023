@@ -17,6 +17,7 @@
 FOLDER="TPE-2023"
 REPO="itba-final-pi/TPE-2023"
 BRANCH_NAME="master"
+DATASET="Datasets Alumnos SMALL"
 
 # Clone the $GIT_REF repo into ./Github/$FOLDER using the corresponding $GIT_SECRET
 if [ ! -d "Github" ]; then mkdir "Github" ; fi
@@ -35,11 +36,19 @@ fi
 cd "./$FOLDER"
 git checkout $BRANCH_NAME
 
-# Run tests
-cd "./tests"
+# Copy the datasets
+if [[ -d "../$DATASET" ]]
+then
+    cp -r "../$DATASET" "$DATASET"
+else
+    # @todo Potentially replace by automatically downloading the dataset
+    echo "::warning title={Failed to copy Dataset ($DATASET) into Folder ($FOLDER)}::A folder called \"$DATASET\" should be found at the repository's parent directory within pampero."
+    exit 1
+fi
 
+# Run tests
 # defines: TOTAL_TEST, ERROR
-source ./test.sh
+source ./tests/test.sh
 
 if [[ $ERROR -eq 0 ]]
 then
