@@ -3,6 +3,8 @@
 #ifndef _bike_stations_h
 #define _bike_stations_h
 
+#define DATE_LEN 20
+
 typedef struct BikeStationCDT * BikeStation;
 
 // Creates a new BikeStation
@@ -13,6 +15,8 @@ void freeStation(BikeStation station);
 void setLatitude(BikeStation station, double latitude);
 
 void setLongitude(BikeStation station, double longitude);
+
+void setOldestTrip(BikeStation startStation, BikeStation endStation, char startedAt[DATE_LEN]);
 
 void incrementMemberTrips(BikeStation station);
 
@@ -30,6 +34,11 @@ char * getName(BikeStation station);
 double getLatitude(BikeStation station);
 
 double getLongitude(BikeStation station);
+
+BikeStation getOldestTripEndStation(BikeStation station);
+
+// Returns a **COPY** of the oldest trip starting date
+char * getOldestTripDate(BikeStation station);
 
 size_t getId(BikeStation station);
 

@@ -220,12 +220,93 @@ void freeCityStations(CityStations city)
     free(city);
 }
 
-// static void processTrips(CityStations city, const char *trips_path)
-// {
-//     // TODO
-//     //  - saves the amount of trips per station and the first one made
-//     //  - saves the amount of trips per day
-// }
+ static void processTrips(CityStations city, const char *trips_path)
+ {
+    // TODO
+    // - open trips file and count for each station and day of the week the trips made
+    // - save the first trip made for each station
+
+    FILE *fp;
+    char line[LINE_SIZE];
+
+    fp = fopen(trips_path, "r");
+    if (fp == NULL)
+        return ERROR;
+
+	// los datos a guardar son:
+	// 	- 
+
+    char *field;
+
+    // First line with header data
+    fgets(line, LINE_SIZE, (FILE *)fp);
+
+    // Iterate over the stations in the file
+    while (fgets(line, LINE_SIZE, (FILE *)fp) != NULL)
+    {
+        unsigned field_index;
+        size_t id;
+        char *name;
+        double latitude, longitude;
+
+        field = strtok(line, DELIM);
+        for (field_index = ID; field; field_index++,field = strtok(NULL, DELIM))
+        {
+            switch (fields[field_index])
+            {
+            case ID:
+                id = strtoul(field, NULL, 10);
+                break;
+            case NAME:
+                name = field;
+                break;
+            case LATITUDE:
+                latitude = atof(field);
+                break;
+            case LONGITUDE:
+                longitude = atof(field);
+                break;
+            default:
+                break;
+            }
+        }
+
+        /*
+         ! Case when the station is already in the vector:
+         ! Possible solutions:
+         !  - ignore it
+         !  - free the station and replace it
+        */
+        if (id < city->stations_max_length && city->stations[id] != NULL)
+            continue;
+
+        BikeStation new = newBikeStation(id, name);
+        if (new == NULL)
+            return ERROR;
+        setLatitude(new, latitude);
+        setLongitude(new, longitude);
+
+        if (addStation(city, new) == ERROR)
+            return ERROR;
+    }
+
+    if (fclose(fp) == EOF)
+        return ERROR;
+
+    return 0;
+
+
+
+     // TODO
+     //  - saves the amount of trips per station and the first one made
+     //  	- checks if both the starting and returning stations are in stations
+     //  	- if not, it ignores them
+     //  	- checks if the trip starts and ends at the same station
+     //  	- if it does, it's not considered when checking for the oldest trip
+     //  - saves the amount of trips per day
+     //  	- increments the position by one in the coresponding day  
+
+ }
 
 // static void orderStationsByTrips(CityStations new)
 // {
