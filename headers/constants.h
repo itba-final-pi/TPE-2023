@@ -25,5 +25,4 @@ typedef enum
     ERROR
 } Status;
 
-
 #endif
