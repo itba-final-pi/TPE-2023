@@ -5,7 +5,7 @@
 #include <assert.h>
 
 #include "tests.h"
-#include "dateCompare.h"
+#include "dates.h"
 
 int
 main(void) {
