@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <string.h>
 
+#include "dates.h"
+
 #define DATE_LEN 20
 
 // Takes advantage of the alphabetical order present in ISO 8601 dates
