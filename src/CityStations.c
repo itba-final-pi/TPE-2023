@@ -28,7 +28,7 @@ typedef enum
 
 #ifdef MON
 static const int fields[NUMBER_OF_FIELDS] = {ID, NAME, LATITUDE, LONGITUDE};
-#elif NYC
+#elif defined(NYC)
 static const int fields[NUMBER_OF_FIELDS] = {NAME, LONGITUDE, LATITUDE, ID};
 #else
 #error "No city was specified on build target"
