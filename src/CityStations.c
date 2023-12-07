@@ -24,8 +24,6 @@ typedef enum
 
 #define NUMBER_OF_FIELDS 4
 
-#define MON
-
 #ifdef MON
 static const int fields[NUMBER_OF_FIELDS] = {ID, NAME, LATITUDE, LONGITUDE};
 #elif NYC
@@ -231,4 +229,3 @@ void freeCityStations(CityStations city)
 // {
 //     // TODO:
 //     //  - sort the stations list by number of trips
-// }
