@@ -2,9 +2,7 @@
 #include <string.h>
 
 #include "../headers/BikeStation.h"
-
-// incluyendo el \0
-#define DATE_LEN 20
+#include "constants.h"
 
 typedef struct Trip{
 	BikeStation endStation;

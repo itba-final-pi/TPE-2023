@@ -3,28 +3,12 @@
 
 // HELPERS
 #include "recalloc.h"
+#include "constants.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
 
-typedef enum
-{
-    OK = 0,
-    ERROR
-} Status;
-
-typedef enum
-{
-    ID = 0,
-    NAME,
-    LATITUDE,
-    LONGITUDE
-} Fields;
-
-#define NUMBER_OF_FIELDS 4
-
-#define MON
 
 #ifdef MON
 static const int fields[NUMBER_OF_FIELDS] = {ID, NAME, LATITUDE, LONGITUDE};
