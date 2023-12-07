@@ -96,3 +96,7 @@ size_t getId(BikeStation station) {
 int compareStationsByName(BikeStation a, BikeStation b){
 	return strcmp(a->name, b->name);
 }
+
+int isOlderTrip(BikeStation station, char date[DATE_LEN]){
+	return dateCompare(station->oldestTrip.startedAt, date) > 0;
+}

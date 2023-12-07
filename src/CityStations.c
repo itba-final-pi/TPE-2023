@@ -211,6 +211,16 @@ void freeCityStations(CityStations city)
     // TODO
     // - open trips file and count for each station and day of the week the trips made
     // - save the first trip made for each station
+    //
+
+    // TODO
+    //  - saves the amount of trips per station and the first one made
+    //  	- checks if both the starting and returning stations are in stations
+    //  	- if not, it ignores them
+    //  	- checks if the trip starts and ends at the same station
+    //  	- if it does, it's not considered when checking for the oldest trip
+    //  - saves the amount of trips per day
+    //  	- increments the position by one in the coresponding day  
 
     if (city == NULL)
         return ERROR;
@@ -224,9 +234,6 @@ void freeCityStations(CityStations city)
     fp = fopen(trips_path, "r");
     if (fp == NULL)
         return ERROR;
-
-	// los datos a guardar son:
-	// 	- 
 
     char *field;
 
@@ -267,6 +274,25 @@ void freeCityStations(CityStations city)
                 break;
             }
         }
+
+		// Now that the values are saved on vars, set the structs:
+		
+		BikeStation start_station = city->stations[start_station_id];
+		BikeStation end_station = city->stations[end_station_id];
+		
+		// Both stations should exist in our struct
+		if(start_station && end_station) {
+			// Checks that the trip is not circular and the date is older
+			if(start_station_id != end_station_id && isDateOlder(city, start_date)){
+				setOldestTrip(start_station, end_station, start_date); 
+			}
+			if(is_member){
+				incrementMemberTrips(start_station);
+			} else {
+				incrementCasualTrips(start_station);
+			}
+		}
+
         start_date = start_date;
         end_date = end_date;
         start_station_id = start_station_id;
@@ -279,17 +305,6 @@ void freeCityStations(CityStations city)
         return ERROR;
 
     return 0;
-
-
-
-     // TODO
-     //  - saves the amount of trips per station and the first one made
-     //  	- checks if both the starting and returning stations are in stations
-     //  	- if not, it ignores them
-     //  	- checks if the trip starts and ends at the same station
-     //  	- if it does, it's not considered when checking for the oldest trip
-     //  - saves the amount of trips per day
-     //  	- increments the position by one in the coresponding day  
 
  }
 
