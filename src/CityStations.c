@@ -283,7 +283,7 @@ void freeCityStations(CityStations city)
 		// Both stations should exist in our struct
 		if(start_station && end_station) {
 			// Checks that the trip is not circular and the date is older
-			if(start_station_id != end_station_id && isDateOlder(city, start_date)){
+			if(start_station_id != end_station_id && isOlderTrip(start_station, start_date)){
 				setOldestTrip(start_station, end_station, start_date); 
 			}
 			if(is_member){

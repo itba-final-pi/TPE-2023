@@ -44,4 +44,6 @@ size_t getId(BikeStation station);
 
 int compareStationsByName(BikeStation a, BikeStation b);
 
+int isOlderTrip(BikeStation station, char date[DATE_LEN]);
+
 #endif

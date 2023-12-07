@@ -99,5 +99,8 @@ int compareStationsByName(BikeStation a, BikeStation b){
 }
 
 int isOlderTrip(BikeStation station, char date[DATE_LEN]){
+    if (station->oldestTrip.startedAt[0] == '\0'){
+        return 1;
+    }
 	return dateCompare(station->oldestTrip.startedAt, date) > 0;
 }
