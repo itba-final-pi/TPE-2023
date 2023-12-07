@@ -3,6 +3,7 @@
 
 #include "../headers/BikeStation.h"
 #include "constants.h"
+#include "dates.h"
 
 typedef struct Trip{
 	BikeStation endStation;
