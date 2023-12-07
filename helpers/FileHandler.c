@@ -14,6 +14,7 @@ FileHandler newFileHandler(char * file) {
 
     if (new->file == NULL) {
         // ERROR
+        free(new);
         return NULL;
     }
 
@@ -48,9 +49,7 @@ int freeFileHandler(FileHandler handler) {
     if ( closeFileHandler(handler) == 0 )
         return 0;
     
-    if ( handler != NULL ) {
-        free(handler);
-    }
+    free(handler);
 
     return 1;
 }
