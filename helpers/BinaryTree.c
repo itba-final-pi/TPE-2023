@@ -68,8 +68,8 @@ static void fixRightImbalance(BinaryTree * tp) {
     child = *cptr;
     if (child->bf != parent->bf) {
         int oldBF = child->left->bf;
-        rotateLeft(cptr);
-        rotateRight(tp);
+        rotateRight(cptr);
+        rotateLeft(tp);
         t = *tp;
         t->bf = 0;
         switch (oldBF) {
@@ -91,7 +91,7 @@ static void fixRightImbalance(BinaryTree * tp) {
     } else {
         rotateLeft(tp);
         t = * tp;
-        t->right->bf = t->bf = 0;
+        t->left->bf = t->bf = 0;
     }
 }
 
@@ -109,6 +109,7 @@ int insertAVL(BinaryTree * tp, int key) {
         return 1;
     }
 
+    // cmpFn
     sign = key - t->key;
 
     if (sign == 0) return 0;
@@ -162,4 +163,13 @@ void freeBinaryTree(BinaryTree tp) {
     if (tp && tp->left) freeBinaryTree(tp->left);
     if (tp && tp->right) freeBinaryTree(tp->right);
     free(tp);
+}
+
+// A utility function to print preorder traversal of the tree.
+// The function also prints height of every node
+void preOrder(BinaryTree root) {
+    if (root != NULL) {
+        preOrder(root->left);
+        preOrder(root->right);
+    }
 }
