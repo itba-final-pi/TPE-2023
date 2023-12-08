@@ -1,10 +1,10 @@
 SHELL := /bin/bash
 
 COMPILER = gcc
-FLAGS = -Wall -Wextra -Werror -pedantic -std=c99 -D$(CITY)
+FLAGS = -Wall -Wextra -Werror -pedantic -std=c99 -D$(CITY) -D_XOPEN_SOURCE -D_GNU_SOURCE -D__USE_XOPEN
 HEADERS = -Iheaders -ICTable
 LINKER_FLAGS = -fsanitize=address
-TEST_FLAGS = -DDEBUG_RUN_TESTS
+TEST_FLAGS = -DDEBUG_RUN_TESTS -g
 
 # https://www.gnu.org/software/make/manual/html_node/Text-Functions.html
 SOURCES := $(wildcard src/*.c helpers/*.c)
