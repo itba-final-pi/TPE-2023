@@ -33,4 +33,10 @@ typedef enum
     ERROR
 } Status;
 
+typedef enum
+{
+    SORT_ASCENDING = -1,
+    SORT_DESCENDING = 1
+} SortOrder;
+
 #endif

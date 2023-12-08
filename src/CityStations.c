@@ -42,14 +42,21 @@ typedef struct CityStationsCDT
     size_t started_trips_by_day[7];
     size_t ended_trips_by_day[7];
     List stations_by_name;
-    BikeStation *stations_by_trips;
+    List current_station_by_name;
+    // BikeStation *stations_by_trips;
+    List stations_by_trips;
+    List current_station_by_trips;
     size_t stations_max_length;
     size_t stations_count;
 } CityStationsCDT;
 
+
+//TODO: REFACTOR THIS(scoped functions)
+typedef int (*compareStations)(BikeStation, BikeStation);
+
 // static void orderStationsByTrips(CityStations new);
 
-static List addRecursive(List list, BikeStation station);
+static List addRecursive(List list, BikeStation station, compareStations compare, int order);
 /**
  * adds a station to the city
  * 
@@ -114,16 +121,16 @@ int loadStation(CityStations city, const char *station_info)
     return 0;
 }
 
-static List addRecursive(List list, BikeStation station)
+static List addRecursive(List list, BikeStation station, compareStations compare, int order)
 {
-    if (list == NULL || compareStationsByName(list->station, station) < 0)
+    if (list == NULL || (compare(list->station, station))*order < 0)
     {
         List new = malloc(sizeof(Node));
         new->station = station;
         new->next = list;
         return new;
     }
-    list->next = addRecursive(list->next, station);
+    list->next = addRecursive(list->next, station, compare, order);
     return list;
 }
 
@@ -146,7 +153,7 @@ static int addStation(CityStations city, BikeStation station)
 
     city->stations[id] = station;
 
-    city->stations_by_name = addRecursive(city->stations_by_name, station);
+    city->stations_by_name = addRecursive(city->stations_by_name, station, compareStationsByName, SORT_ASCENDING);
     city->stations_count++;
     return 0;
 }
@@ -292,4 +299,51 @@ void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN])
     if (strptime(date, "%Y-%m-%d", &date_time) == NULL) // %H:%M:%S
         printf("Error incrementing ended trips by date\n");
     city->ended_trips_by_day[date_time.tm_wday]++;
+}
+
+
+void orderStationsByTrips(CityStations city)
+{
+    size_t i;
+    for (i = 0; i < city->stations_max_length; i++)
+    {
+        if (city->stations[i] != NULL)
+        {
+            city->stations_by_trips = addRecursive(city->stations_by_trips, city->stations[i], compareStationsByTrips, SORT_DESCENDING);
+        }
+    }
+}
+
+void toBeginAlphabeticOrder(CityStations city)
+{
+    city->current_station_by_name = city->stations_by_name;
+}
+
+int hasNextAlphabeticOrder(CityStations city)
+{
+    return city->current_station_by_name != NULL;
+}
+
+BikeStation nextAlphabeticOrder(CityStations city)
+{
+    BikeStation station = city->current_station_by_name->station;
+    city->current_station_by_name = city->current_station_by_name->next;
+    return station;
+}
+
+void toBeginTripsOrder(CityStations city)
+{
+    city->current_station_by_trips = city->stations_by_trips;
+}
+
+int hasNextTripsOrder(CityStations city)
+{
+    return city->current_station_by_trips != NULL;
+}
+
+BikeStation nextTripsOrder(CityStations city)
+{
+    BikeStation station = city->current_station_by_trips->station;
+    city->current_station_by_trips = city->current_station_by_trips->next;
+    return station;
 }

@@ -97,6 +97,14 @@ int compareStationsByName(BikeStation a, BikeStation b){
 	return strcmp(a->name, b->name);
 }
 
+int compareStationsByTrips(BikeStation a, BikeStation b){
+    size_t aTrips = getAllTips(a);
+    size_t bTrips = getAllTips(b);
+    if (aTrips == bTrips)
+        return compareStationsByName(a, b);
+    return aTrips - bTrips;
+}
+
 int isOlderTrip(BikeStation station, char date[DATE_LEN]){
     if (station->oldestTrip.startedAt[0] == '\0'){
         return 1;
