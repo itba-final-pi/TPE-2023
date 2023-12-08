@@ -3,8 +3,8 @@
 #ifndef _constants_h
 #define _constants_h
 
-#define NUMBER_OF_FIELDS_S 4
-#define NUMBER_OF_FIELDS_T 6
+#define NUMBER_OF_FIELDS_STATIONS 4
+#define NUMBER_OF_FIELDS_TRIPS 6
 
 // date length including '\0'
 #define DATE_LEN 20
@@ -36,5 +36,11 @@ typedef enum
     OK = 0,
     ERROR
 } Status;
+
+typedef enum
+{
+    SORT_ASCENDING = -1,
+    SORT_DESCENDING = 1
+} SortOrder;
 
 #endif
