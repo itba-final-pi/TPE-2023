@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "tests.h"
 
@@ -47,30 +48,38 @@ main(void) {
     }
 
     orderStationsByTrips(new);
+    size_t total_stations = getStationsCount(new);
 
+    size_t i = 0;
+    char aux = 0;
     toBeginAlphabeticOrder(new);
     while(hasNextAlphabeticOrder(new))
     {
         BikeStation station = nextAlphabeticOrder(new);
-        size_t id = getId(station);
+        assert(station != NULL);
+
         char * name = getName(station);
-        printf("[%ld] %s\n", id, name);
+        assert(name != NULL);
+
+        assert(aux <= tolower(name[0]));
+        aux = tolower(name[0]);
+        i++;
         free(name);
     }
+    assert(i == total_stations);
 
+    size_t total_trips_aux = -1;
+    i = 0;
     toBeginTripsOrder(new);
-    printf("id;bikeStation;memberTrips;casualTrips;totalTrips\n");
     while(hasNextTripsOrder(new))
     {
         BikeStation station = nextTripsOrder(new);
-        size_t id = getId(station);
-        char * name = getName(station);
-        size_t memberTrips = getMemberTrips(station);
-        size_t casualTrips = getCasualTrips(station);
-        size_t totalTrips = getAllTips(station);
-        printf("%ld;%s;%ld;%ld;%ld\n", id, name, memberTrips, casualTrips, totalTrips);
-        free(name);
+        assert(station != NULL);
+        assert(total_trips_aux >= getAllTips(station));
+        total_trips_aux = getAllTips(station);
+        i++;
     }
+    assert(i == total_stations);
 
     freeStation(station);
     freeCityStations(new);
