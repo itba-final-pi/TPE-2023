@@ -8,6 +8,7 @@
 
 // date length including '\0'
 #define DATE_LEN 20
+#define SIZE_T_CHAR_LEN 20
 
 #define STACK_REALLOC_SIZE 20
 
@@ -30,9 +31,6 @@ typedef enum
 } FieldsTrips;
 
 
-// date length including '\0'
-#define DATE_LEN 20
-#define SIZE_T_CHAR_LEN 20
 
 typedef enum
 {
