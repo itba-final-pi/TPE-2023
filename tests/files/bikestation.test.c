@@ -42,6 +42,18 @@ main(void) {
     assert( getAllTips(bs1) == 1 );
     assert( getMemberTrips(bs1) == 1 );
 
+
+    char * date = "2020-01-01 00:00:00";
+
+    char * date_old = getOldestTripDate(bs0);
+    assert( date_old == NULL );
+    free(date_old);
+
+    setOldestTrip(bs0, bs1, date);
+    assert( strcmp(date_old = getOldestTripDate(bs0), date) == 0 );
+    assert( getOldestTripEndStation(bs0) == bs1 );
+    free(date_old);
+
     freeStation(bs0);
     freeStation(bs1);
 

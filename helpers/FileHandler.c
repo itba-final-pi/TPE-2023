@@ -22,8 +22,11 @@ FileHandler newFileHandler(char * file) {
 }
 
 char * getNextLine(FileHandler handler) {
-    if (handler == NULL || handler->file == NULL) return NULL;
-    fgets(handler->line, LINE_BUFFER_SIZE, handler->file);
+    if (handler == NULL || handler->file == NULL || fgets(handler->line, LINE_BUFFER_SIZE, handler->file) == NULL) {
+        if (handler) *handler->line = 0;
+        return NULL;
+    }
+
     return handler->line;
 }
 

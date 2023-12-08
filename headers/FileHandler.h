@@ -1,7 +1,7 @@
 #include <stdlib.h>
 
-#ifndef _bike_stations_h
-#define _bike_stations_h
+#ifndef _file_handler_h
+#define _file_handler_h
 
 #define LINE_BUFFER_SIZE 255
 
