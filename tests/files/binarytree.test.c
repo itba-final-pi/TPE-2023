@@ -10,25 +10,28 @@
 
 int
 main(void) {
-    BinaryTree tree = NULL;
-    insertAVL(&tree, 10);
-    insertAVL(&tree, 20);
-    insertAVL(&tree, 30);
-    insertAVL(&tree, 40);
+    BinaryTree tree = newBinaryTree();
+    int value = 42;
+
+    insert(&tree, 10, NULL);
+    insert(&tree, 20, NULL);
+    insert(&tree, 30, NULL);
+    insert(&tree, 40, NULL);
 
     assert( getNodeKey(tree) == 20 );
     assert( getNodeKey(getLeftNode(tree)) == 10 );
     assert( getNodeKey(getRightNode(tree)) == 30 );
     assert( getNodeKey(getRightNode(getRightNode(tree))) == 40 );
 
-    insertAVL(&tree, 50);
+    insert(&tree, 50, NULL);
     assert( getNodeKey(getRightNode(tree)) == 40 );
 
-    insertAVL(&tree, 25);
+    insert(&tree, 25, &value);
 
     assert( getNodeKey(tree) == 30 );
     assert( getNodeKey(getLeftNode(tree)) == 20 );
     assert( getNodeKey(getRightNode(tree)) == 40 );
+    assert( getNodeKey(getRightNode(getLeftNode(tree))) == 25 );
 
     freeBinaryTree(tree);
 

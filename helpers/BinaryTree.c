@@ -2,14 +2,15 @@
 
 #include "BinaryTree.h"
 
-typedef struct Node {
-    int key;
-    struct Node * left, * right;
+typedef struct NodeAVL {
+    size_t key;
+    void * elem;
+    struct NodeAVL * left, * right;
     int bf;
-} Node;
+} NodeAVL;
 
 BinaryTree newBinaryTree(void) {
-    return calloc(1, sizeof(Node));
+    return NULL;
 }
 
 static void rotateLeft(BinaryTree * tp) {
@@ -95,27 +96,27 @@ static void fixRightImbalance(BinaryTree * tp) {
     }
 }
 
-int insertAVL(BinaryTree * tp, int key) {
+static int insertAVL(BinaryTree * tp, size_t key, void * elem) {
     BinaryTree t;
     int sign, delta;
     t = *tp;
 
     if (t == NULL) {
-        t = newBinaryTree();
+        t = malloc(sizeof(NodeAVL));
         t->key = key;
+        t->elem = elem;
         t->bf = 0;
         t->left = t->right = NULL;
         *tp = t;
         return 1;
     }
 
-    // cmpFn
     sign = key - t->key;
 
     if (sign == 0) return 0;
 
     if (sign < 0) {
-        delta = insertAVL(&t->left, key);
+        delta = insertAVL(&t->left, key, elem);
         if (delta == 0) return 0;
         switch (t->bf) {
             case 1:
@@ -129,7 +130,7 @@ int insertAVL(BinaryTree * tp, int key) {
                 break ;
         }
     } else {
-        delta = insertAVL(&t->right, key);
+        delta = insertAVL(&t->right, key, elem);
         if (delta == 0) return 0;
         switch (t->bf) {
             case -1:
@@ -147,6 +148,10 @@ int insertAVL(BinaryTree * tp, int key) {
     return 0;
 }
 
+void insert(BinaryTree * t, size_t key, void * elem) {
+    insertAVL(t, key, elem);
+}
+
 BinaryTree getLeftNode(BinaryTree t) {
     return t->left;
 }
@@ -155,21 +160,15 @@ BinaryTree getRightNode(BinaryTree t) {
     return t->right;
 }
 
-int getNodeKey(BinaryTree t) {
+size_t getNodeKey(BinaryTree t) {
     return t->key;
+}
+void * getNodeElement(BinaryTree t) {
+    return t->elem;
 }
 
 void freeBinaryTree(BinaryTree tp) {
     if (tp && tp->left) freeBinaryTree(tp->left);
     if (tp && tp->right) freeBinaryTree(tp->right);
     free(tp);
-}
-
-// A utility function to print preorder traversal of the tree.
-// The function also prints height of every node
-void preOrder(BinaryTree root) {
-    if (root != NULL) {
-        preOrder(root->left);
-        preOrder(root->right);
-    }
 }

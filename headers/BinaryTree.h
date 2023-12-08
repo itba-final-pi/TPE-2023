@@ -3,23 +3,24 @@
 #ifndef _binary_tree_h
 #define _binary_tree_h
 
-typedef struct Node * BinaryTree;
+typedef struct NodeAVL * BinaryTree;
 
 /**
  * @brief Creates a new BinaryTree ADT
  * 
- * @param file path to the file to be opened
  * @return BinaryTree 
  */
 BinaryTree newBinaryTree(void);
 
-int insertAVL(BinaryTree * tp, int key);
+void insert(BinaryTree * t, size_t key, void * elem);
 
 BinaryTree getLeftNode(BinaryTree t);
 
 BinaryTree getRightNode(BinaryTree t);
 
-int getNodeKey(BinaryTree t);
+size_t getNodeKey(BinaryTree t);
+
+void * getNodeElem(BinaryTree t);
 
 void freeBinaryTree(BinaryTree tp);
 
