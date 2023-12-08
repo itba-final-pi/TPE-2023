@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 COMPILER = gcc
-FLAGS = -Wall -Wextra -Werror -pedantic -std=c99 
+FLAGS = -Wall -Wextra -Werror -pedantic -std=c99 -D$(CITY) -D_XOPEN_SOURCE -D_GNU_SOURCE -D__USE_XOPEN
 LINKER_FLAGS = -fsanitize=address
 TEST_FLAGS = -DDEBUG_RUN_TESTS -g
 
@@ -25,7 +25,7 @@ test:
 # Build and link together all sources (NOT THE TESTS)
 .PHONY: all
 all: main.o $(OBJECTS)
-	$(COMPILER) $(LINKER_FLAGS) $< $(OBJECTS) -o Binary.out
+	$(COMPILER) $(LINKER_FLAGS) $^ -o Binary.out
 
 # Debugging
 .PHONY: print

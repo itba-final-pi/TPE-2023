@@ -24,10 +24,7 @@ typedef enum
     RIDEABLE_TYPE
 } FieldsTrips;
 
-// indica para qué csv se quiere compilar
-#define MON
-
-// incluyendo el \0
+// date length including '\0'
 #define DATE_LEN 20
 
 typedef enum
