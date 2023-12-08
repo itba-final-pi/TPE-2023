@@ -17,7 +17,7 @@ main(void) {
     assert( isEmpty(stack) == 1 );
 
     for (int i = 0; i < value_count; i++) {
-        push(stack, (void *) values + i);
+        push(stack, (void *) (values + i));
     }
 
     assert( isEmpty(stack) == 0 );
@@ -25,7 +25,7 @@ main(void) {
 
     // First In -> Last Out
     for (int i = value_count - 1; i >= 0; i--) {
-        assert( pop(stack) == (void *) values + i );
+        assert( pop(stack) == (void *) (values + i) );
     }
 
     push(stack, values);
