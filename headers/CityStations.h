@@ -50,4 +50,8 @@ int loadStation(CityStations city, const char * station_info);
  */
 BikeStation getStation(CityStations city, size_t id);
 
+void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN]);
+
+void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN]);
+
 #endif
