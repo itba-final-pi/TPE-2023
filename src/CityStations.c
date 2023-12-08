@@ -261,12 +261,6 @@ int processTrip(CityStations city, const char *trip_info)
         incrementEndedTripsByDate(city, end_date);
     }
 
-    start_date = start_date;
-    end_date = end_date;
-    start_station_id = start_station_id;
-    end_station_id = end_station_id;
-    is_member = is_member;
-
     return 0;
 }
 
