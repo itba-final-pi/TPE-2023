@@ -17,7 +17,7 @@
 FOLDER="TPE-2023"
 REPO="itba-final-pi/TPE-2023"
 BRANCH_NAME="master"
-DATASET="Datasets Alumnos SMALL"
+DATASET="Datasets Alumnos"
 
 # Clone the $GIT_REF repo into ./Github/$FOLDER using the corresponding $GIT_SECRET
 if [ ! -d "Github" ]; then mkdir "Github" ; fi
