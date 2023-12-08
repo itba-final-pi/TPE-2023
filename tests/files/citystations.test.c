@@ -19,7 +19,7 @@ main(void) {
     // FILE HANDLER
     CityStations new = newCityStations();
     
-    FileHandler file = newFileHandler("./temp/stationsMON.csv");
+    FileHandler file = newFileHandler("./Datasets Alumnos/stationsMON.csv");
 
     char * line = getNextLine(file); // ignore header line
 
@@ -38,7 +38,7 @@ main(void) {
 
     freeFileHandler(file);
     //process trip
-    file = newFileHandler("./temp/bikesMON.csv");
+    file = newFileHandler("./Datasets Alumnos/bikesMON.csv");
     line = getNextLine(file); // ignore header line
 
     // While there's a line, AND it is not empty
