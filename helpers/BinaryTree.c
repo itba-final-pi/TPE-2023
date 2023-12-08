@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "BinaryTree.h"
+#include "../headers/BinaryTree.h"
 
 typedef struct NodeAVL {
     size_t key;
@@ -152,6 +152,26 @@ void insert(BinaryTree * t, size_t key, void * elem) {
     insertAVL(t, key, elem);
 }
 
+static BinaryTree searchRec(BinaryTree t, size_t key) {
+    if (t == NULL) return NULL;
+
+    int sign = key - t->key;
+
+    if (sign == 0) return t;
+
+    if (sign < 0) {
+        return searchRec(t->left, key);
+    }
+
+    return searchRec(t->right, key);
+}
+
+void * search(BinaryTree t, size_t key) {
+    BinaryTree node;
+    if ( t == NULL || (node = searchRec(t, key)) == NULL ) return NULL;
+    return node->elem;
+}
+
 BinaryTree getLeftNode(BinaryTree t) {
     return t->left;
 }
@@ -163,6 +183,7 @@ BinaryTree getRightNode(BinaryTree t) {
 size_t getNodeKey(BinaryTree t) {
     return t->key;
 }
+
 void * getNodeElement(BinaryTree t) {
     return t->elem;
 }

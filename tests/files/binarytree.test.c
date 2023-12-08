@@ -13,7 +13,7 @@ main(void) {
     BinaryTree tree = newBinaryTree();
     int value = 42;
 
-    insert(&tree, 10, NULL);
+    insert(&tree, 10, (void *) 10 );
     insert(&tree, 20, NULL);
     insert(&tree, 30, NULL);
     insert(&tree, 40, NULL);
@@ -32,6 +32,9 @@ main(void) {
     assert( getNodeKey(getLeftNode(tree)) == 20 );
     assert( getNodeKey(getRightNode(tree)) == 40 );
     assert( getNodeKey(getRightNode(getLeftNode(tree))) == 25 );
+
+    assert( search(tree, 10) == (void *) 10 );
+    assert( search(tree, 25) == (void *) &value );
 
     freeBinaryTree(tree);
 
