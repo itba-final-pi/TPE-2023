@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <ctype.h>
 
 #include "tests.h"
 
@@ -19,7 +20,7 @@ main(void) {
     // FILE HANDLER
     CityStations new = newCityStations();
     
-    FileHandler file = newFileHandler("./Datasets Alumnos SMALL/stationsMON.csv");
+    FileHandler file = newFileHandler("./Datasets Alumnos/stationsMON.csv");
 
     char * line = getNextLine(file); // ignore header line
 
@@ -28,11 +29,9 @@ main(void) {
         loadStation(new, line);
     }
 
-    BikeStation station = newBikeStation(1286, "Evans / Clark");
-    setLatitude(station, 45.5110837);
-    setLongitude(station, -73.5679775);
+    BikeStation station = newBikeStation(1286, "Evans / Clark", 45.5110837, -73.5679775);
 
-    assert( getStationsCount(new) == 9 );
+    assert( getStationsCount(new) == 996 );
     assert( getStation(new, 1286) != NULL );
     assert( compareStationsByName(getStation(new, 1286), station) == 0 );
     assert( getLongitude(getStation(new, 1286)) == getLongitude(station) );
@@ -40,13 +39,47 @@ main(void) {
 
     freeFileHandler(file);
     //process trip
-    file = newFileHandler("./Datasets Alumnos SMALL/bikesMON.csv");
+    file = newFileHandler("./Datasets Alumnos/bikesMON.csv");
     line = getNextLine(file); // ignore header line
 
     // While there's a line, AND it is not empty
     while( hasNextLine(file) && (line = getNextLine(file)) ) {
         processTrip(new, line);
     }
+
+    orderStationsByTrips(new);
+    size_t total_stations = getStationsCount(new);
+
+    size_t i = 0;
+    char aux = 0;
+    toBeginAlphabeticOrder(new);
+    while(hasNextAlphabeticOrder(new))
+    {
+        BikeStation station = nextAlphabeticOrder(new);
+        assert(station != NULL);
+
+        char * name = getName(station);
+        assert(name != NULL);
+
+        assert(aux <= tolower(name[0]));
+        aux = tolower(name[0]);
+        i++;
+        free(name);
+    }
+    assert(i == total_stations);
+
+    size_t total_trips_aux = -1;
+    i = 0;
+    toBeginTripsOrder(new);
+    while(hasNextTripsOrder(new))
+    {
+        BikeStation station = nextTripsOrder(new);
+        assert(station != NULL);
+        assert(total_trips_aux >= getAllTips(station));
+        total_trips_aux = getAllTips(station);
+        i++;
+    }
+    assert(i == total_stations);
 
     freeStation(station);
     freeCityStations(new);

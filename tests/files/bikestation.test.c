@@ -15,9 +15,9 @@
 
 int
 main(void) {
-    BikeStation bs0 = newBikeStation( 0, "bs0");
+    BikeStation bs0 = newBikeStation( 0, "bs0", 0.0, 0.0);
     assert( getId(bs0) == 0 );
-    BikeStation bs1 = newBikeStation( 1, "bs1");
+    BikeStation bs1 = newBikeStation( 1, "bs1", 1.0, 1.0);
     assert( getId(bs1) == 1 );
 
     assert( getAllTips(bs0) == 0 );

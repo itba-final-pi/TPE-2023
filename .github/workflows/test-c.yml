@@ -2,8 +2,8 @@
 name: Compile & Test C
 
 env:
-  DATASET_URL: https://storage.googleapis.com/datasets-tpe/Datasets%20Alumnos%20SMALL.zip
-  DATASET_NAME: Datasets Alumnos SMALL
+  DATASET_URL: https://storage.googleapis.com/datasets-tpe/Datasets%20Alumnos.zip
+  DATASET_NAME: Datasets Alumnos
 
 # Controls when the workflow will run
 on:
@@ -29,6 +29,7 @@ jobs:
   build:
     # The type of runner that the job will run on
     runs-on: ${{ matrix.os }}
+    timeout-minutes: 2
     strategy:
       max-parallel: 3
       fail-fast: true
@@ -73,6 +74,7 @@ jobs:
           
   pampero:
       runs-on: ubuntu-latest
+      timeout-minutes: 2
       steps:
         # Checks the repository under $GITHUB_WORKSPACE, so the job can access it
         - uses: actions/checkout@v4

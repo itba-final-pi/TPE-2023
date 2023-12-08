@@ -13,11 +13,11 @@
 #include <time.h>
 
 #ifdef MON
-static const int fields_station[NUMBER_OF_FIELDS_S] = {ID, NAME, LATITUDE, LONGITUDE};
-static const int fields_trips[NUMBER_OF_FIELDS_T] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, IS_MEMBER};
+static const int fields_station[NUMBER_OF_FIELDS_STATIONS] = {ID, NAME, LATITUDE, LONGITUDE};
+static const int fields_trips[NUMBER_OF_FIELDS_TRIPS] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, IS_MEMBER};
 #elif defined(NYC)
-static const int fields_station[NUMBER_OF_FIELDS_S] = {NAME, LATITUDE, LONGITUDE, ID};
-static const int fields_trips[NUMBER_OF_FIELDS_T] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, RIDEABLE_TYPE, IS_MEMBER};
+static const int fields_station[NUMBER_OF_FIELDS_STATIONS] = {NAME, LATITUDE, LONGITUDE, ID};
+static const int fields_trips[NUMBER_OF_FIELDS_TRIPS] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, RIDEABLE_TYPE, IS_MEMBER};
 #else
 #error "No city was specified on build target"
 #endif
@@ -42,14 +42,21 @@ typedef struct CityStationsCDT
     size_t started_trips_by_day[7];
     size_t ended_trips_by_day[7];
     List stations_by_name;
-    BikeStation *stations_by_trips;
+    List current_station_by_name;
+    // BikeStation *stations_by_trips;
+    List stations_by_trips;
+    List current_station_by_trips;
     size_t stations_max_length;
     size_t stations_count;
 } CityStationsCDT;
 
+
+//TODO: REFACTOR THIS(scoped functions)
+typedef int (*compareStations)(BikeStation, BikeStation);
+
 // static void orderStationsByTrips(CityStations new);
 
-static List addRecursive(List list, BikeStation station);
+static List addRecursive(List list, BikeStation station, compareStations compare, int order);
 /**
  * adds a station to the city
  * 
@@ -100,13 +107,9 @@ int loadStation(CityStations city, const char *station_info)
         }
     }
 
-    BikeStation new = newBikeStation(id, name);
-
+    BikeStation new = newBikeStation(id, name, latitude, longitude);
     if (new == NULL)
         return ERROR;
-
-    setLatitude(new, latitude);
-    setLongitude(new, longitude);
 
     if (addStation(city, new) == ERROR)
         return ERROR;
@@ -114,16 +117,16 @@ int loadStation(CityStations city, const char *station_info)
     return 0;
 }
 
-static List addRecursive(List list, BikeStation station)
+static List addRecursive(List list, BikeStation station, compareStations compare, int order)
 {
-    if (list == NULL || compareStationsByName(list->station, station) < 0)
+    if (list == NULL || (compare(list->station, station))*order < 0)
     {
         List new = malloc(sizeof(Node));
         new->station = station;
         new->next = list;
         return new;
     }
-    list->next = addRecursive(list->next, station);
+    list->next = addRecursive(list->next, station, compare, order);
     return list;
 }
 
@@ -146,7 +149,7 @@ static int addStation(CityStations city, BikeStation station)
 
     city->stations[id] = station;
 
-    city->stations_by_name = addRecursive(city->stations_by_name, station);
+    city->stations_by_name = addRecursive(city->stations_by_name, station, compareStationsByName, SORT_ASCENDING);
     city->stations_count++;
     return 0;
 }
@@ -170,6 +173,12 @@ void freeCityStations(CityStations city)
     {
         aux = city->stations_by_name;
         city->stations_by_name = city->stations_by_name->next;
+        free(aux);
+    }
+    while (city->stations_by_trips != NULL)
+    {
+        aux = city->stations_by_trips;
+        city->stations_by_trips = city->stations_by_trips->next;
         free(aux);
     }
     free(city);
@@ -286,4 +295,51 @@ void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN])
     if (strptime(date, "%Y-%m-%d", &date_time) == NULL) // %H:%M:%S
         printf("Error incrementing ended trips by date\n");
     city->ended_trips_by_day[date_time.tm_wday]++;
+}
+
+
+void orderStationsByTrips(CityStations city)
+{
+    size_t i;
+    for (i = 0; i < city->stations_max_length; i++)
+    {
+        if (city->stations[i] != NULL)
+        {
+            city->stations_by_trips = addRecursive(city->stations_by_trips, city->stations[i], compareStationsByTrips, SORT_DESCENDING);
+        }
+    }
+}
+
+void toBeginAlphabeticOrder(CityStations city)
+{
+    city->current_station_by_name = city->stations_by_name;
+}
+
+int hasNextAlphabeticOrder(CityStations city)
+{
+    return city->current_station_by_name != NULL;
+}
+
+BikeStation nextAlphabeticOrder(CityStations city)
+{
+    BikeStation station = city->current_station_by_name->station;
+    city->current_station_by_name = city->current_station_by_name->next;
+    return station;
+}
+
+void toBeginTripsOrder(CityStations city)
+{
+    city->current_station_by_trips = city->stations_by_trips;
+}
+
+int hasNextTripsOrder(CityStations city)
+{
+    return city->current_station_by_trips != NULL;
+}
+
+BikeStation nextTripsOrder(CityStations city)
+{
+    BikeStation station = city->current_station_by_trips->station;
+    city->current_station_by_trips = city->current_station_by_trips->next;
+    return station;
 }
