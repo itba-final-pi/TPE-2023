@@ -24,7 +24,7 @@ typedef enum
     RIDEABLE_TYPE
 } FieldsTrips;
 
-// incluyendo el '\0'
+// date length including '\0'
 #define DATE_LEN 20
 
 typedef enum
