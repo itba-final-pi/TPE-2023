@@ -28,18 +28,12 @@ void freeCityStations(CityStations city);
  */
 size_t getStationsCount(CityStations city);
 
-/**
- * adds a station to the city
- * 
- * @param city CityStations TAD
- * @param station station to add
- * @note the station isn't copied, the TAD will keep a reference to it
- * @return 0 if the station was added, 1 if an error ocurred
- */
-int addStation(CityStations city, BikeStation station);
 
 // To replace addStation -- binary trees needed
 int loadStation(CityStations city, const char * station_info);
+
+int processTrip(CityStations city, const char *trip_info);
+
 
 /**
  * returns the station with the given id
