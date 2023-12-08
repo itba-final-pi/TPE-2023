@@ -13,11 +13,11 @@
 #include <time.h>
 
 #ifdef MON
-static const int fields_station[NUMBER_OF_FIELDS_S] = {ID, NAME, LATITUDE, LONGITUDE};
-static const int fields_trips[NUMBER_OF_FIELDS_T] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, IS_MEMBER};
+static const int fields_station[NUMBER_OF_FIELDS_STATIONS] = {ID, NAME, LATITUDE, LONGITUDE};
+static const int fields_trips[NUMBER_OF_FIELDS_TRIPS] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, IS_MEMBER};
 #elif defined(NYC)
-static const int fields_station[NUMBER_OF_FIELDS_S] = {NAME, LATITUDE, LONGITUDE, ID};
-static const int fields_trips[NUMBER_OF_FIELDS_T] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, RIDEABLE_TYPE, IS_MEMBER};
+static const int fields_station[NUMBER_OF_FIELDS_STATIONS] = {NAME, LATITUDE, LONGITUDE, ID};
+static const int fields_trips[NUMBER_OF_FIELDS_TRIPS] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, RIDEABLE_TYPE, IS_MEMBER};
 #else
 #error "No city was specified on build target"
 #endif
@@ -107,13 +107,9 @@ int loadStation(CityStations city, const char *station_info)
         }
     }
 
-    BikeStation new = newBikeStation(id, name);
-
+    BikeStation new = newBikeStation(id, name, latitude, longitude);
     if (new == NULL)
         return ERROR;
-
-    setLatitude(new, latitude);
-    setLongitude(new, longitude);
 
     if (addStation(city, new) == ERROR)
         return ERROR;
@@ -177,6 +173,12 @@ void freeCityStations(CityStations city)
     {
         aux = city->stations_by_name;
         city->stations_by_name = city->stations_by_name->next;
+        free(aux);
+    }
+    while (city->stations_by_trips != NULL)
+    {
+        aux = city->stations_by_trips;
+        city->stations_by_trips = city->stations_by_trips->next;
         free(aux);
     }
     free(city);

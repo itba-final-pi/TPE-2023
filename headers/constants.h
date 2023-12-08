@@ -3,8 +3,8 @@
 #ifndef _constants_h
 #define _constants_h
 
-#define NUMBER_OF_FIELDS_S 4
-#define NUMBER_OF_FIELDS_T 6
+#define NUMBER_OF_FIELDS_STATIONS 4
+#define NUMBER_OF_FIELDS_TRIPS 6
 
 typedef enum
 {

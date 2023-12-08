@@ -8,13 +8,9 @@
 typedef struct BikeStationCDT * BikeStation;
 
 // Creates a new BikeStation
-BikeStation newBikeStation(size_t id, char * name);
+BikeStation newBikeStation(size_t id, char * name, double latitude, double longitude);
 
 void freeStation(BikeStation station);
-
-void setLatitude(BikeStation station, double latitude);
-
-void setLongitude(BikeStation station, double longitude);
 
 void setOldestTrip(BikeStation startStation, BikeStation endStation, char startedAt[DATE_LEN]);
 

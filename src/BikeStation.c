@@ -19,25 +19,19 @@ typedef struct BikeStationCDT {
 	Trip oldestTrip;
 } BikeStationCDT;
 
-BikeStation newBikeStation(size_t id, char * name) {
+BikeStation newBikeStation(size_t id, char * name, double latitude, double longitude){
     BikeStation new = calloc(1, sizeof(BikeStationCDT));
     new->id = id;
     new->name = malloc(strlen(name) + 1);
     strcpy(new->name, name);
+    new->latitude = latitude;
+    new->longitude = longitude;
     return new;
 }
 
 void freeStation(BikeStation station){
     free(station->name);
     free(station);
-}
-
-void setLatitude(BikeStation station, double latitude) {
-    station->latitude = latitude;
-}
-
-void setLongitude(BikeStation station, double longitude){
-    station->longitude = longitude;
 }
 
 void setOldestTrip(BikeStation startStation, BikeStation endStation, char startedAt[DATE_LEN]) {
@@ -94,7 +88,7 @@ size_t getId(BikeStation station) {
 }
 
 int compareStationsByName(BikeStation a, BikeStation b){
-	return strcmp(a->name, b->name);
+	return strcasecmp(a->name, b->name);
 }
 
 int compareStationsByTrips(BikeStation a, BikeStation b){
