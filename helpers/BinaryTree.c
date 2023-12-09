@@ -3,7 +3,14 @@
 #include "BinaryTree.h"
 #include "Stack.h"
 
+static void rotateLeft(AVLTree * tp);
+static void rotateRight(AVLTree * tp);
+static void fixLeftImbalance(AVLTree * tp);
+static void fixRightImbalance(AVLTree * tp);
+static int insertAVL(AVLTree * tp, size_t key, void * elem);
+static AVLTree searchRec(AVLTree t, size_t key);
 static void moveIteratorFarthestLeft(AVLTree current, Stack s);
+static void freeAVLTree(AVLTree t);
 
 typedef struct NodeAVL {
     size_t key;
