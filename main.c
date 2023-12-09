@@ -4,12 +4,14 @@
 #include "CityStations.h"
 #include "FileHandler.h"
 #include "htmlTable.h"
+#include "csvTable.h"
 #include "constants.h"
 
 #define QUERY_1_NAME "query1"
 #define QUERY_2_NAME "query2"
 #define QUERY_3_NAME "query3"
 
+#define QUERY_1_HEADERS "bikeStation", "memberTrips", "casualTrips", "allTrips"
 
 void loadStations(CityStations city_stations, char * file_name){
 	FileHandler file = newFileHandler(file_name);
@@ -63,7 +65,8 @@ int main(int argc, char *argv[])
 
 	printf("Finished ordering by trips\n");
 
-	htmlTable table = newTable( QUERY_1_NAME ".html", 4, "bikeStation", "memberTrips", "casualTrips", "allTrips");
+	htmlTable html_table = newTable( QUERY_1_NAME ".html", 4, QUERY_1_HEADERS );
+	csvTable csv_table = newCsvTable( QUERY_1_NAME ".csv", 4, QUERY_1_HEADERS );
 
 	toBeginTripsOrder(city_stations);
 	while(hasNextTripsOrder(city_stations)) 
@@ -79,11 +82,13 @@ int main(int argc, char *argv[])
 		sprintf(casual_trips, "%zu",  getCasualTrips(station));
 		sprintf(all_trips, "%zu", getAllTrips(station)); 
 
-		addHTMLRow(table, name, member_trips, casual_trips, all_trips);
+		addHTMLRow(html_table, name, member_trips, casual_trips, all_trips);
+		addCsvRow(csv_table, name, member_trips, casual_trips, all_trips);
 
 		free(name);
     }
-    closeHTMLTable(table);
+    closeHTMLTable(html_table);
+    closeCsvTable(csv_table);
 	
 	// Query 2
 
