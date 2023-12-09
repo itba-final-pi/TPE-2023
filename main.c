@@ -42,7 +42,7 @@ int main(int argc, char *argv[])
 
 	if(argc != 3) {
 		// TODO: handle error if # of args is wrong
-		printf("Usage: dale panchito\n");
+		printf("Error: Wrong amount of arguments provided\n");
 		return 1;
 	} 
 
@@ -62,17 +62,6 @@ int main(int argc, char *argv[])
 	orderStationsByTrips(city_stations);
 
 	printf("Finished ordering by trips\n");
-
-	// Query 1  -  total de viajes por estación, orden por cantidad
-	//
-	// 	nombre de estación ; cantidad de viajes de miembros ; cantidad de viajes de no miembros ; total
-	//
-	//	guardar csv y html (primero el html, después vemos)
-	//
-	//	- guardar encabezados en los archivos
-	//		- creando el html
-	//	- generar iterador, iterar cada elemento y guardar la línea en el html
-	
 
 	htmlTable table = newTable( QUERY_1_NAME ".html", 4, "bikeStation", "memberTrips", "casualTrips", "allTrips");
 
@@ -96,8 +85,6 @@ int main(int argc, char *argv[])
     }
     closeHTMLTable(table);
 	
-
-
 	// Query 2
 
 	// Query 3	
