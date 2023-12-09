@@ -60,16 +60,18 @@ main(void) {
 
     assert(i == total_stations);
 
-    size_t total_trips_aux = -1;
+    size_t total_trips_aux = 0;
     i = 0;
     toBeginTripsOrder(new);
-    while(hasNextTripsOrder(new)) {
-        BikeStation station = nextTripsOrder(new);
-        assert(station != NULL);
-        assert(total_trips_aux >= getAllTrips(station));
-        total_trips_aux = getAllTrips(station);
+    BikeStation station_aux;
+    while((station_aux = (BikeStation) nextTripsOrder(new)) != NULL) {
+        assert(station_aux != NULL);
+        assert(total_trips_aux <= getAllTrips(station_aux));
+        total_trips_aux = getAllTrips(station_aux);
         i++;
     }
+    printf("total_trips_aux: %zu\n", total_trips_aux);
+    printf("i: %zu\n", i);
     assert(i == total_stations);
 
     freeStation(station);
@@ -117,14 +119,14 @@ main(void) {
 
     assert(i == total_stations);
 
-    size_t total_trips_aux = -1;
+    size_t total_trips_aux = 0;
     i = 0;
     toBeginTripsOrder(new);
-    while(hasNextTripsOrder(new)) {
-        BikeStation station = nextTripsOrder(new);
-        assert(station != NULL);
-        assert(total_trips_aux >= getAllTrips(station));
-        total_trips_aux = getAllTrips(station);
+    BikeStation station_aux;
+    while((station_aux = (BikeStation) nextTripsOrder(new)) != NULL) {
+        assert(station_aux != NULL);
+        assert(total_trips_aux <= getAllTrips(station_aux));
+        total_trips_aux = getAllTrips(station_aux);
         i++;
     }
     assert(i == total_stations);

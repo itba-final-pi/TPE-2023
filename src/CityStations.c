@@ -37,8 +37,8 @@ typedef struct CityStationsCDT
 		size_t ended_trips_by_day[NUMBER_OF_WEEK_DAYS];
 		List stations_by_name;
 		List current_station_by_name;
-		List stations_by_trips;
-		List current_station_by_trips;
+		BinaryTree stations_by_trips;
+		BikeStation current_station_by_trips;
 		size_t stations_max_length;
 		size_t stations_count;
 } CityStationsCDT;
@@ -88,6 +88,7 @@ CityStations newCityStations(void)
 {
 		CityStations new = calloc(1, sizeof(CityStationsCDT));
         new->stations = newBinaryTree();
+        new->stations_by_trips = newBinaryTree();
 		if (new == NULL)
 				return NULL;
 
@@ -180,9 +181,10 @@ void freeCityStations(CityStations city)
 		}
 		while (city->stations_by_trips != NULL)
 		{
-				aux = city->stations_by_trips;
-				city->stations_by_trips = city->stations_by_trips->next;
-				free(aux);
+				// aux = city->stations_by_trips;
+				// city->stations_by_trips = city->stations_by_trips->next;
+				// free(aux);
+                freeBinaryTree(city->stations_by_trips);
 		}
 		free(city);
 }
@@ -260,14 +262,16 @@ static void incrementEndedTripsByDate(CityStations city, const char date[DATE_LE
 
 void orderStationsByTrips(CityStations city)
 {
-		int error = OK;
+		// int error = OK;
 		toBeginTreeIter(city->stations);
         BikeStation station;
         while ((station = (BikeStation) getNextTreeElem(city->stations)) != NULL)
         {
-            city->stations_by_trips = addRecursive(city->stations_by_trips, station, compareStationsByTrips, SORT_DESCENDING, &error);
-            if (error == ERROR)
-                    return;
+            // city->stations_by_trips = addRecursive(city->stations_by_trips, station, compareStationsByTrips, SORT_DESCENDING, &error);
+            // if (error == ERROR)
+            //         return;
+            insert(city->stations_by_trips, getAllTrips(station), station);
+            printf("Inserted station %zu\n", getId(station));
         }
 }
 
@@ -290,18 +294,16 @@ BikeStation nextAlphabeticOrder(CityStations city)
 
 void toBeginTripsOrder(CityStations city)
 {
-		city->current_station_by_trips = city->stations_by_trips;
+        toBeginTreeIter(city->stations_by_trips);
 }
 
 int hasNextTripsOrder(CityStations city)
 {
-		return city->current_station_by_trips != NULL;
+		return hasNextTreeElem(city->stations_by_trips);
 }
 
 BikeStation nextTripsOrder(CityStations city)
 {
-		BikeStation station = city->current_station_by_trips->station;
-		city->current_station_by_trips = city->current_station_by_trips->next;
-		return station;
+		return getNextTreeElem(city->stations_by_trips);
 }
 
