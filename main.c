@@ -20,7 +20,6 @@
 #define QUERY_2_HEADERS "bikeStation", "bikeEndStation", "oldestDateTime"
 #define QUERY_3_HEADERS "weekDay", "startedTrips", "endedTrips"
 
-/*
 static const char *week_day_names[NUMBER_OF_WEEK_DAYS] = {
     "Monday",
     "Tuesday",
@@ -30,7 +29,6 @@ static const char *week_day_names[NUMBER_OF_WEEK_DAYS] = {
     "Saturday",
     "Sunday"
 };
-*/
 
 
 void loadStations(CityStations city_stations, char * file_name){
@@ -143,7 +141,6 @@ int main(int argc, char *argv[])
 
 	// ---- QUERY 3 ----
 
-	/*
 	html_table = newTable( QUERY_3_NAME ".html", QUERY_3_COLUMNS, QUERY_3_HEADERS );
 	csv_table = newCsvTable( QUERY_3_NAME ".csv", QUERY_3_COLUMNS, QUERY_3_HEADERS );
 
@@ -156,7 +153,6 @@ int main(int argc, char *argv[])
 	}
 	closeHTMLTable(html_table);
 	closeCsvTable(csv_table);
-	*/
 
 
 	freeCityStations(city_stations);
