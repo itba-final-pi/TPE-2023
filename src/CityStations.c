@@ -262,12 +262,12 @@ void orderStationsByTrips(CityStations city)
 {
 		int error = OK;
 		toBeginTreeIter(city->stations);
-        while (hasNextTreeElem(city->stations))
+        BikeStation station;
+        while ((station = (BikeStation) getNextTreeElem(city->stations)) != NULL)
         {
-                BikeStation station = getNextTreeElem(city->stations);
-                city->stations_by_trips = addRecursive(city->stations_by_trips, station, compareStationsByTrips, SORT_DESCENDING, &error);
-                if (error == ERROR)
-                        return;
+            city->stations_by_trips = addRecursive(city->stations_by_trips, station, compareStationsByTrips, SORT_DESCENDING, &error);
+            if (error == ERROR)
+                    return;
         }
 }
 
