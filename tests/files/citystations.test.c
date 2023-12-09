@@ -51,21 +51,25 @@ main(void) {
     size_t total_stations = getStationsCount(new);
 
     size_t i = 0;
-    char aux = 0;
+    char * aux = calloc(1, sizeof(char));
+
     toBeginAlphabeticOrder(new);
-    while(hasNextAlphabeticOrder(new))
-    {
+
+    while(hasNextAlphabeticOrder(new)) {
         BikeStation station = nextAlphabeticOrder(new);
         assert(station != NULL);
 
         char * name = getName(station);
         assert(name != NULL);
 
-        assert(aux <= tolower(name[0]));
-        aux = tolower(name[0]);
+        assert( strcasecmp(aux, name) <= 0 );
+        free(aux);
+        aux = name;
         i++;
-        free(name);
     }
+
+    free(aux);
+
     assert(i == total_stations);
 
     size_t total_trips_aux = -1;
