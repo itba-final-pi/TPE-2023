@@ -27,6 +27,7 @@ do
         echo "$file" | egrep '.*template.*' -q
         if [[ "$?" -ne 0 && $ERROR -eq 0 ]]
         then
+			      rm -rf ./tests/test-out/*
             make test file="./tests/files/$file" CITY=$CITY
 
             GCC_EXITC=$?
