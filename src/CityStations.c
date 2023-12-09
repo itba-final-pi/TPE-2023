@@ -244,7 +244,7 @@ int processTrip(CityStations city, const char *trip_info)
         case START_DATE:
             start_date = field;
 #ifdef NYC
-            start_date[20] = '\0';
+            start_date[DATE_LEN-1] = '\0';
 #endif
             break;
         case START_STATION_ID:
@@ -253,7 +253,7 @@ int processTrip(CityStations city, const char *trip_info)
         case END_DATE:
             end_date = field;
 #ifdef NYC
-            end_date[20] = '\0';
+            end_date[DATE_LEN-1] = '\0';
 #endif
             break;
         case END_STATION_ID:
