@@ -30,7 +30,18 @@ typedef enum
     RIDEABLE_TYPE
 } FieldsTrips;
 
+typedef enum
+{
+	MONDAY = 0,
+	TUESDAY,
+	WEDNESDAY,
+	THURSDAY,
+	FRIDAY,
+	SATURDAY,
+	SUNDAY,
+} WeekDays;
 
+#define NUMBER_OF_WEEK_DAYS (SUNDAY - MONDAY + 1)
 
 typedef enum
 {

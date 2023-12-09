@@ -12,8 +12,24 @@
 #define QUERY_2_NAME "query2"
 #define QUERY_3_NAME "query3"
 
+#define QUERY_1_COLUMNS 4
+#define QUERY_2_COLUMNS 3
+#define QUERY_3_COLUMNS 3
+
 #define QUERY_1_HEADERS "bikeStation", "memberTrips", "casualTrips", "allTrips"
 #define QUERY_2_HEADERS "bikeStation", "bikeEndStation", "oldestDateTime"
+#define QUERY_3_HEADERS "weekDay", "startedTrips", "endedTrips"
+
+static const char *week_day_names[NUMBER_OF_WEEK_DAYS] = {
+    "Monday",
+    "Tuesday",
+    "Wednesday",
+    "Thursday",
+    "Friday",
+    "Saturday",
+    "Sunday"
+};
+
 
 void loadStations(CityStations city_stations, char * file_name){
 	FileHandler file = newFileHandler(file_name);
@@ -62,8 +78,8 @@ int main(int argc, char *argv[])
 
 	// ---- QUERY 1 ----
 
-	html_table = newTable( QUERY_1_NAME ".html", 4, QUERY_1_HEADERS );
-	csv_table = newCsvTable( QUERY_1_NAME ".csv", 4, QUERY_1_HEADERS );
+	html_table = newTable( QUERY_1_NAME ".html", QUERY_1_COLUMNS, QUERY_1_HEADERS );
+	csv_table = newCsvTable( QUERY_1_NAME ".csv", QUERY_1_COLUMNS, QUERY_1_HEADERS );
 
 	toBeginTripsOrder(city_stations);
 	while(hasNextTripsOrder(city_stations)) 
@@ -90,8 +106,8 @@ int main(int argc, char *argv[])
 
 	// ---- QUERY 2 ----
 
-	html_table = newTable( QUERY_2_NAME ".html", 3, QUERY_2_HEADERS );
-	csv_table = newCsvTable( QUERY_2_NAME ".csv", 3, QUERY_2_HEADERS );
+	html_table = newTable( QUERY_2_NAME ".html", QUERY_2_COLUMNS, QUERY_2_HEADERS );
+	csv_table = newCsvTable( QUERY_2_NAME ".csv",  QUERY_2_COLUMNS, QUERY_2_HEADERS );
 
 	toBeginAlphabeticOrder(city_stations);
 	while(hasNextAlphabeticOrder(city_stations)) 
@@ -116,15 +132,29 @@ int main(int argc, char *argv[])
 		addCsvRow(csv_table, name, end_station_name, date);
 
 		free(name);
+		free(end_station_name);
+		free(date);
 	}
 	closeHTMLTable(html_table);
 	
 
+	// ---- QUERY 3 ----
 
-	// Query 3	
+	html_table = newTable( QUERY_3_NAME ".html", QUERY_3_COLUMNS, QUERY_3_HEADERS );
+	csv_table = newCsvTable( QUERY_3_NAME ".csv", QUERY_3_COLUMNS, QUERY_3_HEADERS );
 
+	for(int day=MONDAY; day < NUMBER_OF_WEEK_DAYS; day++){
+		size_t started_trips = getStartedTripsByWeekDay(day);
+		size_t ended_trips = getEndedTripsByWeekDay(day);
+
+		addHTMLRow(html_table, week_day_names[day], started_trips, ended_trips);
+		addCsvRow(csv_table, week_day_names[day], started_trips, ended_trips);
+	}
+	closeHTMLTable(html_table);
 
 	freeCityStations(city_stations);
 
 	return 0;
 }
+
+
