@@ -55,4 +55,9 @@ do
         fi
     done
 
+
+    if [[ $ERROR -ne 0 ]]; then
+      break
+    fi
+
 done
