@@ -36,7 +36,7 @@ size_t getStationsCount(CityStations city);
  * @param station_info station to add
  * @return 0 if the station was added, 1 if an error ocurred
  */
-int loadStation(CityStations city, const char * station_info);
+int loadStation(CityStations city, const size_t id, const char *name, const double latitude, const double longitude);
 
 /**
  * adds a trip to the city
@@ -45,7 +45,7 @@ int loadStation(CityStations city, const char * station_info);
  * @param trip_info trip to add
  * @return 0 if the trip was added, 1 if an error ocurred
  */
-int processTrip(CityStations city, const char *trip_info);
+int processTrip(CityStations city, const char *start_date, const char *end_date, const size_t start_station_id, const size_t end_station_id, const int is_member);
 
 /**
  * returns the station with the given id
