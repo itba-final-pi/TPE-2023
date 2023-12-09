@@ -1,7 +1,7 @@
 SHELL := /bin/bash
 
 COMPILER = gcc
-FLAGS = -Wall -Wextra -Werror -pedantic -std=c99 -D$(CITY) -D_XOPEN_SOURCE -D_GNU_SOURCE -D__USE_XOPEN
+FLAGS = -Wall -Wextra -Werror -pedantic -std=c99 -D_XOPEN_SOURCE -D_GNU_SOURCE -D__USE_XOPEN
 HEADERS = -Iheaders -ICTable
 LINKER_FLAGS = -fsanitize=address
 TEST_FLAGS = -DDEBUG_RUN_TESTS -g
@@ -9,6 +9,11 @@ TEST_FLAGS = -DDEBUG_RUN_TESTS -g
 # https://www.gnu.org/software/make/manual/html_node/Text-Functions.html
 SOURCES := $(wildcard src/*.c helpers/*.c)
 OBJECTS := $(SOURCES:%.c=%.o)
+
+# Allows defining the city when calling make
+ifneq ($(CITY),)
+	FLAGS += -D$(CITY)
+endif
 
 # Compiles main.c file separately
 main.o: main.c
@@ -35,11 +40,14 @@ all: main.o $(OBJECTS) ./CTable/htmlTable.o
 	$(COMPILER) $(LINKER_FLAGS) $^ -o Binary.out
 
 # Debugging
-.PHONY: print
-print:
+.PHONY: debug_make
+debug_make:
+	@echo $(MAKECMDGOALS)
 	@echo $(OBJECTS)
 	@echo $(SOURCES)
-	@echo $(TESTS)
+	@echo $(FLAGS)
+	@echo $(LINKER_FLAGS)
+	@echo $(TEST_FLAGS)
 
 # Cleans out all object and binary files built
 .PHONY: clean
