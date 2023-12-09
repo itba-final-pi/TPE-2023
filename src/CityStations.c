@@ -343,3 +343,4 @@ BikeStation nextTripsOrder(CityStations city)
     city->current_station_by_trips = city->current_station_by_trips->next;
     return station;
 }
+

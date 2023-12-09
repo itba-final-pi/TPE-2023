@@ -80,7 +80,7 @@ int main(int argc, char *argv[])
 
 		sprintf(member_trips, "%zu", getMemberTrips(station));
 		sprintf(casual_trips, "%zu",  getCasualTrips(station));
-		sprintf(all_trips, "%zu", getAllTrips(station));
+		sprintf(all_trips, "%zu", getAllTrips(station)); 
 
 		addHTMLRow(table, name, member_trips, casual_trips, all_trips);
 
