@@ -5,13 +5,13 @@
 
 typedef struct StackCDT * Stack;
 
-Stack newStack(size_t elem_size);
+Stack newStack(void);
 
 void push(Stack stack, void * elem);
 
 void * pop(Stack stack);
 
-int isEmpty(Stack stack);
+int isEmptyStack(Stack stack);
 
 size_t stackSize(Stack stack);
 

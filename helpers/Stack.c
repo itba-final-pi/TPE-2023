@@ -6,12 +6,10 @@
 typedef struct StackCDT {
     void * * elems;
     size_t count;
-    size_t elem_size;
 } StackCDT;
 
-Stack newStack(size_t elem_size) {
+Stack newStack(void) {
     Stack new = calloc(1, sizeof(StackCDT));
-    new->elem_size = elem_size;
     return new;
 }
 
@@ -23,13 +21,13 @@ void push(Stack stack, void * elem) {
 }
 
 void * pop(Stack stack) {
-    if(isEmpty(stack)) {
+    if(isEmptyStack(stack)) {
         return NULL;
     }
     return stack->elems[--stack->count];
 }
 
-int isEmpty(Stack stack) {
+int isEmptyStack(Stack stack) {
     return stack->count == 0;
 }
 
@@ -38,6 +36,6 @@ size_t stackSize(Stack stack) {
 }
 
 void freeStack(Stack stack) {
-    free(stack->elems);
+    if (stack) free(stack->elems);
     free(stack);
 }
