@@ -18,7 +18,7 @@ void incrementMemberTrips(BikeStation station);
 
 void incrementCasualTrips(BikeStation station);
 
-size_t getAllTips(BikeStation station);
+size_t getAllTrips(BikeStation station);
 
 size_t getMemberTrips(BikeStation station);
 

@@ -75,8 +75,8 @@ main(void) {
     {
         BikeStation station = nextTripsOrder(new);
         assert(station != NULL);
-        assert(total_trips_aux >= getAllTips(station));
-        total_trips_aux = getAllTips(station);
+        assert(total_trips_aux >= getAllTrips(station));
+        total_trips_aux = getAllTrips(station);
         i++;
     }
     assert(i == total_stations);

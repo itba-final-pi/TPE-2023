@@ -47,7 +47,7 @@ void incrementCasualTrips(BikeStation station) {
     station->casualTrips++;
 }
 
-size_t getAllTips(BikeStation station) {
+size_t getAllTrips(BikeStation station) {
     return station->memberTrips + station->casualTrips;
 }
 
@@ -92,8 +92,8 @@ int compareStationsByName(BikeStation a, BikeStation b){
 }
 
 int compareStationsByTrips(BikeStation a, BikeStation b){
-    size_t aTrips = getAllTips(a);
-    size_t bTrips = getAllTips(b);
+    size_t aTrips = getAllTrips(a);
+    size_t bTrips = getAllTrips(b);
     if (aTrips == bTrips)
         return compareStationsByName(a, b);
     return aTrips - bTrips;

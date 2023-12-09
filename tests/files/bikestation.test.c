@@ -20,8 +20,8 @@ main(void) {
     BikeStation bs1 = newBikeStation( 1, "bs1", 1.0, 1.0);
     assert( getId(bs1) == 1 );
 
-    assert( getAllTips(bs0) == 0 );
-    assert( getAllTips(bs1) == 0 );
+    assert( getAllTrips(bs0) == 0 );
+    assert( getAllTrips(bs1) == 0 );
 
     char * bs0Name = getName(bs0);
     assert( strcmp(bs0Name, "bs0") == 0 );
@@ -32,14 +32,14 @@ main(void) {
     for (int i = 0; i < 5; i++)
         incrementCasualTrips(bs0);
     
-    assert( getAllTips(bs0) == 5 );
+    assert( getAllTrips(bs0) == 5 );
     assert( getCasualTrips(bs0) == 5 );
     assert( getMemberTrips(bs0) == 0 );
 
-    assert( getAllTips(bs1) == 0 );
+    assert( getAllTrips(bs1) == 0 );
 
     incrementMemberTrips(bs1);
-    assert( getAllTips(bs1) == 1 );
+    assert( getAllTrips(bs1) == 1 );
     assert( getMemberTrips(bs1) == 1 );
 
 
