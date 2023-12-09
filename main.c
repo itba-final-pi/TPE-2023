@@ -28,7 +28,7 @@ void loadTrips(CityStations city_stations, char * file_name){
     char * line = getNextLine(file); // ignore header line
 
     while( hasNextLine(file) && (line = getNextLine(file)) ) {
-        loadTrips(city_stations, line);
+        processTrip(city_stations, line);
     }
 	freeFileHandler(file);
 }
@@ -42,6 +42,8 @@ int main(int argc, char *argv[])
 
 	if(argc != 3) {
 		// TODO: handle error if # of args is wrong
+		printf("Usage: dale panchito\n");
+		return 1;
 	} 
 
 	char * stations_path = argv[1];
@@ -50,10 +52,16 @@ int main(int argc, char *argv[])
 	CityStations city_stations = newCityStations();
 
 	loadStations(city_stations, stations_path);
+
+	printf("Stations loaded\n");
+
 	loadTrips(city_stations, trips_path);
+	
+	printf("Finished loading everything\n");
 
 	orderStationsByTrips(city_stations);
 
+	printf("Finished ordering by trips\n");
 
 	// Query 1  -  total de viajes por estación, orden por cantidad
 	//
