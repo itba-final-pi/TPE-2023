@@ -30,7 +30,7 @@ BinaryTree newBinaryTree(void);
  * @param key size_t key 
  * @param elem element (pointer)
  */
-void insert(BinaryTree * t, size_t key, void * elem);
+void insert(BinaryTree t, size_t key, void * elem);
 
 /**
  * @brief Returns the elem pointer corresponding to the key within the tree

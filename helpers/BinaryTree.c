@@ -163,8 +163,8 @@ static int insertAVL(AVLTree * tp, size_t key, void * elem) {
     return 0;
 }
 
-void insert(BinaryTree * t, size_t key, void * elem) {
-    insertAVL(&(*t)->root, key, elem);
+void insert(BinaryTree t, size_t key, void * elem) {
+    insertAVL(&t->root, key, elem);
 }
 
 static AVLTree searchRec(AVLTree t, size_t key) {
