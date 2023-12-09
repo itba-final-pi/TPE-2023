@@ -204,6 +204,7 @@ void * getNodeElement(AVLTree t) {
 static void freeAVLTree(AVLTree t) {
     if (t && t->left) freeAVLTree(t->left);
     if (t && t->right) freeAVLTree(t->right);
+    free(t);
 }
 
 void freeBinaryTree(BinaryTree t) {
