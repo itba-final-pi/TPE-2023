@@ -14,7 +14,7 @@ typedef struct BikeStationCDT * BikeStation;
  * @param longitude the station longitude
  * @return the new BikeStation
  */
-BikeStation newBikeStation(size_t id, char * name, double latitude, double longitude);
+BikeStation newBikeStation(const size_t id, const char * name, const double latitude, const double longitude);
 
 /**
  * frees the memory allocated for the BikeStation
@@ -28,7 +28,7 @@ void freeStation(BikeStation station);
  * @param endStation the station where the trip ended
  * @param startedAt the date when the trip started
  */
-void setOldestTrip(BikeStation startStation, BikeStation endStation, char startedAt[DATE_LEN]);
+void setOldestTrip(BikeStation startStation, BikeStation endStation, const char startedAt[DATE_LEN]);
 
 /**
  * increments the number of trips made by member users of the station 
@@ -129,6 +129,6 @@ int compareStationsByTrips(BikeStation a, BikeStation b);
  * @param date date to compare
  * @return 1 if the date of the oldest trip is older than the given date, 0 otherwise
  */
-int isOlderTrip(BikeStation station, char date[DATE_LEN]);
+int isOlderTrip(const BikeStation station, const char date[DATE_LEN]);
 
 #endif

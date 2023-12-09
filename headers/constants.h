@@ -12,6 +12,9 @@
 
 #define STACK_REALLOC_SIZE 20
 
+#define LINE_SIZE 255
+#define DELIM ";"
+
 typedef enum
 {
     ID = 0,
