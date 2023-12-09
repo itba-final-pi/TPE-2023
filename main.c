@@ -55,15 +55,8 @@ int main(int argc, char *argv[])
 
 	loadStations(city_stations, stations_path);
 
-	printf("Stations loaded\n");
-
 	loadTrips(city_stations, trips_path);
-	
-	printf("Finished loading everything\n");
-
 	orderStationsByTrips(city_stations);
-
-	printf("Finished ordering by trips\n");
 
 	htmlTable html_table = newTable( QUERY_1_NAME ".html", 4, QUERY_1_HEADERS );
 	csvTable csv_table = newCsvTable( QUERY_1_NAME ".csv", 4, QUERY_1_HEADERS );
