@@ -9,6 +9,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <errno.h>
 
 #include <time.h>
 
@@ -21,6 +22,9 @@ static const int fields_trips[NUMBER_OF_FIELDS_TRIPS] = {START_DATE, START_STATI
 #else
 #error "No city was specified on build target"
 #endif
+
+// Fix tm_wday values, since they start on Sunday. Recives a struct tm 
+#define GET_WEEK_DAY(date) date.tm_wday - 1 > 0 ? date.tm_wday - 1 : NUMBER_OF_WEEK_DAYS - 1
 
 // TODO: evaluate reallocating in blocks
 #define BLOCK_STATION 600
@@ -39,11 +43,10 @@ typedef Node *List;
 typedef struct CityStationsCDT
 {
     BikeStation *stations;
-    size_t started_trips_by_day[7];
-    size_t ended_trips_by_day[7];
+    size_t started_trips_by_day[NUMBER_OF_WEEK_DAYS];
+    size_t ended_trips_by_day[NUMBER_OF_WEEK_DAYS];
     List stations_by_name;
     List current_station_by_name;
-    // BikeStation *stations_by_trips;
     List stations_by_trips;
     List current_station_by_trips;
     size_t stations_max_length;
@@ -54,9 +57,17 @@ typedef struct CityStationsCDT
 //TODO: REFACTOR THIS(scoped functions)
 typedef int (*compareStations)(BikeStation, BikeStation);
 
-// static void orderStationsByTrips(CityStations new);
+/**
+ * adds a station to the list in order
+ * 
+ * @param list list to add the station to
+ * @param station station to add
+ * @param compare function to compare the stations
+ * @param order 1 for ascending order, -1 for descending order
+ * @return the new list
+*/
+static List addRecursive(List list, BikeStation station, compareStations compare, int order, int *error);
 
-static List addRecursive(List list, BikeStation station, compareStations compare, int order);
 /**
  * adds a station to the city
  * 
@@ -66,6 +77,22 @@ static List addRecursive(List list, BikeStation station, compareStations compare
  * @return 0 if the station was added, 1 if an error ocurred
  */
 static int addStation(CityStations city, BikeStation station);
+
+/**
+ * increments the number of started trips in the given date
+ * 
+ * @param city CityStations ADT
+ * @return void
+ */
+static void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN]);
+
+/**
+ * increments the number of ended trips in the given date
+ * 
+ * @param city CityStations ADT
+ * @return void
+ */
+static void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN]);
 
 CityStations newCityStations(void)
 {
@@ -117,16 +144,21 @@ int loadStation(CityStations city, const char *station_info)
     return 0;
 }
 
-static List addRecursive(List list, BikeStation station, compareStations compare, int order)
+static List addRecursive(List list, BikeStation station, compareStations compare, int order, int *error)
 {
     if (list == NULL || (compare(list->station, station))*order < 0)
     {
         List new = malloc(sizeof(Node));
+        if (new == NULL || errno == ENOMEM)
+        {
+            *error = ERROR;
+            return list;
+        }
         new->station = station;
         new->next = list;
         return new;
     }
-    list->next = addRecursive(list->next, station, compare, order);
+    list->next = addRecursive(list->next, station, compare, order, error);
     return list;
 }
 
@@ -142,14 +174,18 @@ static int addStation(CityStations city, BikeStation station)
     if (id >= city->stations_max_length)
     {
         city->stations = recalloc(city->stations, city->stations_max_length * sizeof(BikeStation), (id + BLOCK_STATION) * sizeof(BikeStation));
-        if (city->stations == NULL)
-            return ERROR;
+        if (city->stations == NULL || errno == ENOMEM)
+                return ERROR;
         city->stations_max_length = id + BLOCK_STATION;
     }
 
     city->stations[id] = station;
 
-    city->stations_by_name = addRecursive(city->stations_by_name, station, compareStationsByName, SORT_ASCENDING);
+    int error = OK;
+    city->stations_by_name = addRecursive(city->stations_by_name, station, compareStationsByName, SORT_ASCENDING, &error);
+    if (error == ERROR)
+        return ERROR;
+
     city->stations_count++;
     return 0;
 }
@@ -186,25 +222,11 @@ void freeCityStations(CityStations city)
 
 int processTrip(CityStations city, const char *trip_info)
 {
-    // TODO
-    // - open trips file and count for each station and day of the week the trips made
-    // - save the first trip made for each station
-    //
-
-    // TODO
-    //  - saves the amount of trips per station and the first one made
-    //  	- checks if both the starting and returning stations are in stations
-    //  	- if not, it ignores them
-    //  	- checks if the trip starts and ends at the same station
-    //  	- if it does, it's not considered when checking for the oldest trip
-    //  - saves the amount of trips per day
-    //  	- increments the position by one in the coresponding day
-
-    if (city == NULL)
+    if (city == NULL || trip_info == NULL)
+    {
+        errno = EINVAL;
         return ERROR;
-
-    if (trip_info == NULL)
-        return ERROR;
+    }
 
     char *field;
     unsigned field_index;
@@ -273,39 +295,53 @@ int processTrip(CityStations city, const char *trip_info)
     return 0;
 }
 
-//  void orderStationsByTrips(CityStations new)
-// {
-//     // TODO:
-//     //  - sort the stations list by number of trips
-// }
-
-void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN])
+size_t getStartedTripsByDay(CityStations city, size_t day)
 {
-    struct tm date_time = {0};
-    if (strptime(date, "%Y-%m-%d", &date_time) == NULL) // %H:%M:%S
-        printf("Error incrementing ended trips by date\n");
-
-    city->started_trips_by_day[date_time.tm_wday]++;
+    if (day >= NUMBER_OF_WEEK_DAYS)
+    {
+        errno = EINVAL;
+        return 0;
+    }
+    return city->started_trips_by_day[day];
 }
 
-void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN])
+size_t getEndedTripsByDay(CityStations city, size_t day)
 {
-    struct tm date_time = {0};
-
-    if (strptime(date, "%Y-%m-%d", &date_time) == NULL) // %H:%M:%S
-        printf("Error incrementing ended trips by date\n");
-    city->ended_trips_by_day[date_time.tm_wday]++;
+    if (day >= NUMBER_OF_WEEK_DAYS)
+    {
+        errno = EINVAL;
+        return 0;
+    }
+    return city->ended_trips_by_day[day];
 }
 
+static void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN])
+{
+    struct tm date_time = {0};
+    if (strptime(date, "%Y-%m-%d", &date_time) == NULL || errno == EINVAL) // %H:%M:%S
+            return;
+
+    city->started_trips_by_day[GET_WEEK_DAY(date_time)]++;
+}
+
+static void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN])
+{
+    struct tm date_time = {0};
+    if (strptime(date, "%Y-%m-%d", &date_time) == NULL || errno == EINVAL) // %H:%M:%S
+        return;
+
+    city->ended_trips_by_day[GET_WEEK_DAY(date_time)]++;
+}
 
 void orderStationsByTrips(CityStations city)
 {
     size_t i;
-    for (i = 0; i < city->stations_max_length; i++)
+    int error = OK;
+    for (i = 0; i < city->stations_max_length && !error; i++)
     {
         if (city->stations[i] != NULL)
         {
-            city->stations_by_trips = addRecursive(city->stations_by_trips, city->stations[i], compareStationsByTrips, SORT_DESCENDING);
+            city->stations_by_trips = addRecursive(city->stations_by_trips, city->stations[i], compareStationsByTrips, SORT_DESCENDING, &error);
         }
     }
 }
