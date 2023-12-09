@@ -1,5 +1,6 @@
 #include "CityStations.h"
 #include "BikeStation.h"
+#include "BinaryTree.h"
 
 // HELPERS
 #include "recalloc.h"
@@ -31,7 +32,7 @@ typedef Node *List;
 
 typedef struct CityStationsCDT
 {
-		BikeStation *stations;
+		BinaryTree stations;
 		size_t started_trips_by_day[NUMBER_OF_WEEK_DAYS];
 		size_t ended_trips_by_day[NUMBER_OF_WEEK_DAYS];
 		List stations_by_name;
@@ -86,7 +87,7 @@ static void incrementEndedTripsByDate(CityStations city, const char date[DATE_LE
 CityStations newCityStations(void)
 {
 		CityStations new = calloc(1, sizeof(CityStationsCDT));
-
+        new->stations = newBinaryTree();
 		if (new == NULL)
 				return NULL;
 
@@ -132,16 +133,17 @@ static int addStation(CityStations city, BikeStation station)
 {
 		size_t id = getId(station);
 
-		if (id >= city->stations_max_length)
-		{
-				city->stations = recalloc(city->stations, city->stations_max_length * sizeof(BikeStation), (id + BLOCK_STATION) * sizeof(BikeStation));
-				if (city->stations == NULL || errno == ENOMEM)
-						return ERROR;
-				city->stations_max_length = id + BLOCK_STATION;
-		}
+		insert(city->stations, id, station);
+        BikeStation aux = search(city->stations, id);
+        if (aux == NULL)
+                printf(">>>>>>>>>ERROR<<<<<<<<<<\n");
+        
+        if (id > city->stations_max_length)
+        {
+            city->stations_max_length = id + 100;
+        }
 
-		city->stations[id] = station;
-
+        // ! TEMPORAL
 		int error = OK;
 		city->stations_by_name = addRecursive(city->stations_by_name, station, compareStationsByName, SORT_ASCENDING, &error);
 		if (error == ERROR)
@@ -155,16 +157,20 @@ BikeStation getStation(CityStations city, size_t id)
 {
 		if (id >= city->stations_max_length)
 				return NULL;
-		return city->stations[id];
+		return search(city->stations, id);
 }
 
 void freeCityStations(CityStations city)
 {
-		size_t i;
-		for (i = 0; i < city->stations_max_length; i++)
-				if (city->stations[i] != NULL)
-						freeStation(city->stations[i]);
-		free(city->stations);
+        toBeginTreeIter(city->stations);
+        BikeStation station_aux;
+		while((station_aux = (BikeStation) getNextTreeElem(city->stations)) != NULL)
+        {
+                // BikeStation station = getNextTreeElem(city->stations);
+                // freeStation(station);
+                freeStation(station_aux);
+        }
+		freeBinaryTree(city->stations);
 		List aux;
 		while (city->stations_by_name != NULL)
 		{
@@ -191,8 +197,8 @@ int processTrip(CityStations city, const char *start_date, const char *end_date,
 				return ERROR;
 		}
 
-		BikeStation start_station = city->stations[start_station_id];
-		BikeStation end_station = city->stations[end_station_id];
+		BikeStation start_station = search(city->stations, start_station_id);
+		BikeStation end_station = search(city->stations, end_station_id);
 
 		// Both stations should exist in our struct
 		if (!start_station || !end_station)
@@ -254,15 +260,15 @@ static void incrementEndedTripsByDate(CityStations city, const char date[DATE_LE
 
 void orderStationsByTrips(CityStations city)
 {
-		size_t i;
 		int error = OK;
-		for (i = 0; i < city->stations_max_length && !error; i++)
-		{
-				if (city->stations[i] != NULL)
-				{
-						city->stations_by_trips = addRecursive(city->stations_by_trips, city->stations[i], compareStationsByTrips, SORT_DESCENDING, &error);
-				}
-		}
+		toBeginTreeIter(city->stations);
+        while (hasNextTreeElem(city->stations))
+        {
+                BikeStation station = getNextTreeElem(city->stations);
+                city->stations_by_trips = addRecursive(city->stations_by_trips, station, compareStationsByTrips, SORT_DESCENDING, &error);
+                if (error == ERROR)
+                        return;
+        }
 }
 
 void toBeginAlphabeticOrder(CityStations city)
