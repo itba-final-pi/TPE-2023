@@ -26,7 +26,7 @@ void freeCityStations(CityStations city);
  * @param city CityStations ADT
  * @return number of stations in the city
  */
-size_t getStationsCount(CityStations city);
+size_t getStationsCount(const CityStations city);
 
 // To replace addStation -- binary trees needed
 /**
@@ -54,7 +54,7 @@ int processTrip(CityStations city, const char *start_date, const char *end_date,
  * @param id id of the station
  * @return station with the given id, NULL if it doesn't exist
  */
-BikeStation getStation(CityStations city, size_t id);
+BikeStation getStation(const CityStations city, const size_t id);
 
 /**
  * returns the amount of started trips in a day of the week
@@ -72,7 +72,7 @@ size_t getStartedTripsByDay(CityStations city, WeekDays day);
  * @param day day of the week (0-6) (Monday-Sunday)
  * @return amount of ended trips in the given day
  */
-size_t getEndedTripsByDay(CityStations city, WeekDays day);
+size_t getEndedTripsByDay(CityStations city, const WeekDays day);
 
 /**
  * orders the stations in the city by trips

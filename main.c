@@ -9,6 +9,8 @@
 #include "htmlTable.h"
 #include "csvTable.h"
 #include "constants.h"
+#include "loadStations.h"
+#include "processTrips.h"
 
 #define QUERY_1_OUTPUT_FILE "query1"
 #define QUERY_2_OUTPUT_FILE "query2"
@@ -23,22 +25,6 @@
 #define QUERY_3_HEADERS "weekDay", "startedTrips", "endedTrips"
 
 
-
-#ifdef MON
-static const int fields_station[NUMBER_OF_FIELDS_STATIONS] = {ID, NAME, LATITUDE, LONGITUDE};
-static const int fields_trips[NUMBER_OF_FIELDS_TRIPS] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, IS_MEMBER};
-#define IS_MEMBER(field) (field[0] == '1')
-
-#elif defined(NYC)
-static const int fields_station[NUMBER_OF_FIELDS_STATIONS] = {NAME, LATITUDE, LONGITUDE, ID};
-static const int fields_trips[NUMBER_OF_FIELDS_TRIPS] = {START_DATE, START_STATION_ID, END_DATE, END_STATION_ID, RIDEABLE_TYPE, IS_MEMBER};
-#define IS_MEMBER(field) (field[0] == 'm')
-
-#else
-#error "No city was specified on build target"
-#endif
-
-
 static const char *week_day_names[NUMBER_OF_WEEK_DAYS] = {
 		"Monday",
 		"Tuesday",
@@ -48,101 +34,6 @@ static const char *week_day_names[NUMBER_OF_WEEK_DAYS] = {
 		"Saturday",
 		"Sunday"
 };
-
-
-void loadStations(CityStations city_stations, char * file_name){
-		FileHandler file = newFileHandler(file_name);
-
-		char * line = getNextLine(file); // ignore header line
-
-		size_t id;
-		char *name;
-		double latitude, longitude;
-
-		while( hasNextLine(file) && (line = getNextLine(file)) ) 
-		{
-				char *field = strtok((char *)line, DELIM);
-
-				// Iterate over the columns on the file
-				// fields_station has the field you are reading given it's index
-				for (unsigned field_index = 0; field; field_index++, field = strtok(NULL, DELIM))
-				{
-						switch (fields_station[field_index])
-						{
-								case ID:
-										id = strtoul(field, NULL, 10);
-										break;
-								case NAME:
-										name = field;
-										break;
-								case LATITUDE:
-										latitude = atof(field);
-										break;
-								case LONGITUDE:
-										longitude = atof(field);
-										break;
-								default:
-										break;
-						}
-				}
-
-				loadStation(city_stations, id, name, latitude, longitude);
-		}
-
-		freeFileHandler(file);
-}
-
-void loadTrips(CityStations city_stations, char * file_name){
-		FileHandler file = newFileHandler(file_name);
-
-		char * line = getNextLine(file); // ignore header line
-
-		char *start_date;
-		char *end_date;
-		size_t start_station_id;
-		size_t end_station_id;
-		int is_member; 
-
-		while( hasNextLine(file) && (line = getNextLine(file)) ) {
-				char *field = strtok((char*) line, DELIM);
-
-				// Iterate over the columns on the file
-				// fields_trips has the field you are reading given it's index
-				for (unsigned field_index = 0; field; field_index++, field = strtok(NULL, DELIM))
-				{
-						switch (fields_trips[field_index])
-						{
-								case START_DATE:
-										start_date = field;
-#ifdef NYC
-										start_date[DATE_LEN-1] = '\0';
-#endif
-										break;
-								case START_STATION_ID:
-										start_station_id = strtoul(field, NULL, 10);
-										break;
-								case END_DATE:
-										end_date = field;
-#ifdef NYC
-										end_date[DATE_LEN-1] = '\0';
-#endif
-										break;
-								case END_STATION_ID:
-										end_station_id = strtoul(field, NULL, 10);
-										break;
-								case IS_MEMBER:
-										is_member = IS_MEMBER(field); 
-										break;
-								default:
-										break;
-						}
-				}
-				processTrip(city_stations, start_date, end_date, start_station_id, end_station_id, is_member);
-
-		}
-		freeFileHandler(file);
-}
-
 
 
 int main(int argc, char *argv[])
@@ -162,7 +53,7 @@ int main(int argc, char *argv[])
 		CityStations city_stations = newCityStations();
 
 		loadStations(city_stations, stations_path);
-		loadTrips(city_stations, trips_path);
+		processTrips(city_stations, trips_path);
 		orderStationsByTrips(city_stations);
 
 

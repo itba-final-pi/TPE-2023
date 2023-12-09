@@ -7,7 +7,7 @@ LINKER_FLAGS = -fsanitize=address
 TEST_FLAGS = -DDEBUG_RUN_TESTS -g
 
 # https://www.gnu.org/software/make/manual/html_node/Text-Functions.html
-SOURCES := $(wildcard src/*.c helpers/*.c)
+SOURCES := $(wildcard src/*.c helpers/*.c front/*.c)
 OBJECTS := $(SOURCES:%.c=%.o)
 
 # Allows defining the city when calling make

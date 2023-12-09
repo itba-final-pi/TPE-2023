@@ -44,7 +44,7 @@ typedef struct CityStationsCDT
 
 
 //TODO: REFACTOR THIS(scoped functions)
-typedef int (*compareStations)(BikeStation, BikeStation);
+typedef int (*compareStations)(const BikeStation, const BikeStation);
 
 /**
  * adds a station to the list in order
@@ -73,7 +73,7 @@ static int addStation(CityStations city, BikeStation station);
  * @param city CityStations ADT
  * @return void
  */
-static void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN]);
+static void incrementStartedTripsByDate(CityStations city, const char date[DATE_LEN]);
 
 /**
  * increments the number of ended trips in the given date
@@ -81,7 +81,7 @@ static void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN]);
  * @param city CityStations ADT
  * @return void
  */
-static void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN]);
+static void incrementEndedTripsByDate(CityStations city, const char date[DATE_LEN]);
 
 CityStations newCityStations(void)
 {
@@ -234,7 +234,7 @@ size_t getEndedTripsByDay(CityStations city, WeekDays day)
 		return city->ended_trips_by_day[day];
 }
 
-static void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN])
+static void incrementStartedTripsByDate(CityStations city, const char date[DATE_LEN])
 {
 		struct tm date_time = {0};
 		if (strptime(date, "%Y-%m-%d", &date_time) == NULL || errno == EINVAL) // %H:%M:%S
@@ -243,7 +243,7 @@ static void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN])
 		city->started_trips_by_day[GET_WEEK_DAY(date_time)]++;
 }
 
-static void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN])
+static void incrementEndedTripsByDate(CityStations city, const char date[DATE_LEN])
 {
 		struct tm date_time = {0};
 		if (strptime(date, "%Y-%m-%d", &date_time) == NULL || errno == EINVAL) // %H:%M:%S
