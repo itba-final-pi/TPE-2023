@@ -2,14 +2,15 @@
 
 #include <stdlib.h>
 #include <stdio.h>
- #include <assert.h>
+#include <assert.h>
 #include <string.h>
 
- #include "tests.h"
+#include "tests.h"
 #include "csvTable.h"
 #include "FileHandler.h"
 
 #define OUTPUT_FILE "./tests/test-out/csvTable.csv"
+
 int
 main(void) {
     csvTable table = newCsvTable(OUTPUT_FILE, 2, "Column 1", "Column 2");
