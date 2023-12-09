@@ -136,7 +136,8 @@ int main(int argc, char *argv[])
 		free(date);
 	}
 	closeHTMLTable(html_table);
-	
+	closeCsvTable(csv_table);
+
 
 	// ---- QUERY 3 ----
 
@@ -151,6 +152,8 @@ int main(int argc, char *argv[])
 		addCsvRow(csv_table, week_day_names[day], started_trips, ended_trips);
 	}
 	closeHTMLTable(html_table);
+	closeCsvTable(csv_table);
+
 
 	freeCityStations(city_stations);
 
