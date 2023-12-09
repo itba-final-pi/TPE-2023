@@ -54,3 +54,4 @@ debug_make:
 clean:
 	@find . -type f -name '*.o' -delete
 	@find . -type f -name '*.out' -delete
+	@find . -type d -name '*.out.dSYM' -exec rm -r {} +

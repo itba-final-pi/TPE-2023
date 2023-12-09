@@ -201,7 +201,7 @@ void * getNodeElement(AVLTree t) {
 
 #endif
 
-void static freeAVLTree(AVLTree t) {
+static void freeAVLTree(AVLTree t) {
     if (t && t->left) freeAVLTree(t->left);
     if (t && t->right) freeAVLTree(t->right);
 }
