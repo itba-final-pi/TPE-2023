@@ -16,8 +16,7 @@
 int
 main(void) {
     
-    
-    // FILE HANDLER
+#ifdef MON
     CityStations new = newCityStations();
     
     FileHandler file = newFileHandler("./Datasets Alumnos/stationsMON.csv");
@@ -75,8 +74,7 @@ main(void) {
     size_t total_trips_aux = -1;
     i = 0;
     toBeginTripsOrder(new);
-    while(hasNextTripsOrder(new))
-    {
+    while(hasNextTripsOrder(new)) {
         BikeStation station = nextTripsOrder(new);
         assert(station != NULL);
         assert(total_trips_aux >= getAllTrips(station));
@@ -88,6 +86,7 @@ main(void) {
     freeStation(station);
     freeCityStations(new);
     freeFileHandler(file);
+#endif
 
     return 0;
 }
