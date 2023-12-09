@@ -23,6 +23,9 @@ static const int fields_trips[NUMBER_OF_FIELDS_TRIPS] = {START_DATE, START_STATI
 #error "No city was specified on build target"
 #endif
 
+// Fix tm_wday values, since they start on Sunday. Recives a struct tm 
+#define GET_WEEK_DAY(date) date.tm_wday - 1 > 0 ? date.tm_wday - 1 : NUMBER_OF_WEEK_DAYS - 1
+
 // TODO: evaluate reallocating in blocks
 #define BLOCK_STATION 600
 
@@ -40,8 +43,8 @@ typedef Node *List;
 typedef struct CityStationsCDT
 {
     BikeStation *stations;
-    size_t started_trips_by_day[7];
-    size_t ended_trips_by_day[7];
+    size_t started_trips_by_day[NUMBER_OF_WEEK_DAYS];
+    size_t ended_trips_by_day[NUMBER_OF_WEEK_DAYS];
     List stations_by_name;
     List current_station_by_name;
     List stations_by_trips;
@@ -74,6 +77,22 @@ static List addRecursive(List list, BikeStation station, compareStations compare
  * @return 0 if the station was added, 1 if an error ocurred
  */
 static int addStation(CityStations city, BikeStation station);
+
+/**
+ * increments the number of started trips in the given date
+ * 
+ * @param city CityStations ADT
+ * @return void
+ */
+static void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN]);
+
+/**
+ * increments the number of ended trips in the given date
+ * 
+ * @param city CityStations ADT
+ * @return void
+ */
+static void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN]);
 
 CityStations newCityStations(void)
 {
@@ -276,22 +295,42 @@ int processTrip(CityStations city, const char *trip_info)
     return 0;
 }
 
-void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN])
+size_t getStartedTripsByDay(CityStations city, size_t day)
+{
+    if (day >= NUMBER_OF_WEEK_DAYS)
+    {
+        errno = EINVAL;
+        return 0;
+    }
+    return city->started_trips_by_day[day];
+}
+
+size_t getEndedTripsByDay(CityStations city, size_t day)
+{
+    if (day >= NUMBER_OF_WEEK_DAYS)
+    {
+        errno = EINVAL;
+        return 0;
+    }
+    return city->ended_trips_by_day[day];
+}
+
+static void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN])
 {
     struct tm date_time = {0};
     if (strptime(date, "%Y-%m-%d", &date_time) == NULL || errno == EINVAL) // %H:%M:%S
             return;
 
-    city->started_trips_by_day[date_time.tm_wday]++;
+    city->started_trips_by_day[GET_WEEK_DAY(date_time)]++;
 }
 
-void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN])
+static void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN])
 {
     struct tm date_time = {0};
     if (strptime(date, "%Y-%m-%d", &date_time) == NULL || errno == EINVAL) // %H:%M:%S
         return;
 
-    city->ended_trips_by_day[date_time.tm_wday]++;
+    city->ended_trips_by_day[GET_WEEK_DAY(date_time)]++;
 }
 
 void orderStationsByTrips(CityStations city)

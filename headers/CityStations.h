@@ -28,7 +28,6 @@ void freeCityStations(CityStations city);
  */
 size_t getStationsCount(CityStations city);
 
-
 // To replace addStation -- binary trees needed
 /**
  * adds a station to the city
@@ -58,20 +57,22 @@ int processTrip(CityStations city, const char *trip_info);
 BikeStation getStation(CityStations city, size_t id);
 
 /**
- * increments the number of started trips in the given date
+ * returns the amount of started trips in a day of the week
  * 
  * @param city CityStations ADT
- * @return void
+ * @param day day of the week (0-6) (Monday-Sunday)
+ * @return amount of started trips in the given day
  */
-void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN]);
+size_t getStartedTripsByDay(CityStations city, size_t day);
 
 /**
- * increments the number of ended trips in the given date
+ * returns the amount of ended trips in a day of the week
  * 
  * @param city CityStations ADT
- * @return void
+ * @param day day of the week (0-6) (Monday-Sunday)
+ * @return amount of ended trips in the given day
  */
-void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN]);
+size_t getEndedTripsByDay(CityStations city, size_t day);
 
 /**
  * orders the stations in the city by trips
@@ -106,7 +107,6 @@ int hasNextAlphabeticOrder(CityStations city);
  */
 BikeStation nextAlphabeticOrder(CityStations city);
 
-
 /**
  * set the iterator to the first station in the city, in increasing order of started trips
  * 
@@ -130,6 +130,5 @@ int hasNextTripsOrder(CityStations city);
  * @return next station
  */
 BikeStation nextTripsOrder(CityStations city);
-
 
 #endif
