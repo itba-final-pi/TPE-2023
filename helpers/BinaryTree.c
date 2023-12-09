@@ -3,11 +3,12 @@
 #include "BinaryTree.h"
 #include "Stack.h"
 
-static void rotateLeft(AVLTree * tp);
-static void rotateRight(AVLTree * tp);
-static void fixLeftImbalance(AVLTree * tp);
-static void fixRightImbalance(AVLTree * tp);
-static int insertAVL(AVLTree * tp, size_t key, void * elem);
+#define MAX(a,b) ((a) > (b) ? a : b)
+
+static int getHeight(AVLTree n);
+static AVLTree rotateLeft(AVLTree tp);
+static AVLTree rotateRight(AVLTree tp);
+static AVLTree insertAVL(AVLTree tp, size_t key, void * elem);
 static AVLTree searchRec(AVLTree t, size_t key);
 static void moveIteratorFarthestLeft(AVLTree current, Stack s);
 static void freeAVLTree(AVLTree t);
@@ -16,7 +17,7 @@ typedef struct NodeAVL {
     size_t key;
     void * elem;
     struct NodeAVL * left, * right;
-    int bf;
+    int height;
 } NodeAVL;
 
 typedef struct BinaryTreeCDT {
@@ -28,143 +29,89 @@ BinaryTree newBinaryTree(void) {
     return calloc(1, sizeof(BinaryTreeCDT));
 }
 
-static void rotateLeft(AVLTree * tp) {
-    AVLTree parent = *tp, child = (*tp)->right;
-    parent->right = child->left;
-    child->left = parent;
-    (*tp) = child;
-}
-
-static void rotateRight(AVLTree * tp) {
-    AVLTree parent = *tp, child = (*tp)->left;
-    parent->left = child->right;
-    child->right = parent;
-    (*tp) = child;
-}
-
-static void fixLeftImbalance(AVLTree * tp) {
-    AVLTree t, parent, child, * cptr;
-    parent = *tp;
-    cptr = &(parent->left);
-    child = *cptr;
-    if (child->bf != parent->bf) {
-        
-        int oldBF = child->right->bf;
-        rotateLeft(cptr);
-        rotateRight(tp);
-        t = *tp;
-        t->bf = 0;
-        switch (oldBF) {
-            case -1:
-                t->left->bf = 0; t->right->bf = 1;
-                break;
-
-            case 0:
-                t->left->bf = t->right->bf = 0;
-                break;
-
-            case 1:
-                t->left->bf = -1; t->right->bf = 0;
-                break;
-            
-            default:
-                break;
-        }
-    } else {
-        rotateRight(tp);
-        t = * tp;
-        t->right->bf = t->bf = 0;
-    }
-}
-
-static void fixRightImbalance(AVLTree * tp) {
-    AVLTree t, parent, child, * cptr;
-    parent = *tp;
-    cptr = &(parent->right);
-    child = *cptr;
-    if (child->bf != parent->bf) {
-        int oldBF = child->left->bf;
-        rotateRight(cptr);
-        rotateLeft(tp);
-        t = *tp;
-        t->bf = 0;
-        switch (oldBF) {
-            case -1:
-                t->right->bf = 0; t->left->bf = 1;
-                break;
-
-            case 0:
-                t->right->bf = t->left->bf = 0;
-                break;
-
-            case 1:
-                t->right->bf = -1; t->left->bf = 0;
-                break;
-            
-            default:
-                break;
-        }
-    } else {
-        rotateLeft(tp);
-        t = * tp;
-        t->left->bf = t->bf = 0;
-    }
-}
-
-static int insertAVL(AVLTree * tp, size_t key, void * elem) {
-    AVLTree t;
-    int sign, delta;
-    t = *tp;
-
-    if (t == NULL) {
-        t = malloc(sizeof(NodeAVL));
-        t->key = key;
-        t->elem = elem;
-        t->bf = 0;
-        t->left = t->right = NULL;
-        *tp = t;
-        return 1;
+static int getHeight(AVLTree n) {
+    if(n == NULL) {
+        return 0;
     }
 
-    sign = key - t->key;
+    return n->height;
+}
 
-    if (sign == 0) return 0;
+int getBalanceFactor(AVLTree t){
+    if( t == NULL ){
+        return 0;
+    }
+    return getHeight(t->left) - getHeight(t->right);
+}
 
-    if (sign < 0) {
-        delta = insertAVL(&t->left, key, elem);
-        if (delta == 0) return 0;
-        switch (t->bf) {
-            case 1:
-                return (t->bf = 0);
-            case 0:
-                return -(t->bf = -1);
-            case -1:
-                fixLeftImbalance(tp);
-                return 0;
-            default:
-                break ;
-        }
-    } else {
-        delta = insertAVL(&t->right, key, elem);
-        if (delta == 0) return 0;
-        switch (t->bf) {
-            case -1:
-                return (t->bf = 0);
-            case 0:
-                return (t->bf = 1);
-            case 1:
-                fixRightImbalance(tp);
-                return 0;
-            default:
-                break ;
-        }
+static AVLTree rotateRight(AVLTree parent){
+    AVLTree child = parent->left; 
+    AVLTree aux = child->right; 
+  
+    child->right = parent; 
+    parent->left = aux; 
+  
+    parent->height = MAX(getHeight(parent->left), getHeight(parent->right)) + 1; 
+    child->height = MAX(getHeight(child->left), getHeight(child->right)) + 1; 
+  
+    return child; 
+}
+
+static AVLTree rotateLeft(AVLTree parent){
+    AVLTree child = parent->right; 
+    AVLTree aux = child->left; 
+  
+    child->left = parent; 
+    parent->right = aux; 
+  
+    parent->height = MAX(getHeight(parent->left), getHeight(parent->right)) + 1; 
+    child->height = MAX(getHeight(child->left), getHeight(child->right)) + 1; 
+  
+    return child; 
+}
+
+static AVLTree insertAVL(AVLTree tp, size_t key, void * elem){
+    // Create/insert new node
+    if (tp == NULL) {
+        AVLTree node = malloc(sizeof(NodeAVL));
+        node->key = key;
+        node->elem = elem;
+        node->left = node->right = NULL;
+        node->height = 1;
+        return node;
     }
 
-    return 0;
+    // Ignore duplicates
+    if (key == tp->key) return tp;
+
+    // Perform recursive insertion
+    if (key < tp->key) {
+        tp->left  = insertAVL(tp->left, key, elem);
+    } else { // key > tp->key
+        tp->right = insertAVL(tp->right, key, elem);
+    }
+
+    tp->height = MAX(getHeight(tp->left), getHeight(tp->right)) + 1;
+
+    // Get the node's new balance factor
+    int bf = getBalanceFactor(tp);
+
+    if ( bf > 1 ) {
+        if (key > tp->left->key) tp->left =  rotateLeft(tp->left); 
+        return rotateRight(tp); 
+    } 
+
+    if ( bf < -1 ) {
+        if (key < tp->right->key) tp->right = rotateRight(tp->right); 
+        return rotateLeft(tp); 
+    }
+
+    // bf == 0 return the same node
+    return tp;
 }
 
 void insert(BinaryTree t, size_t key, void * elem) {
-    insertAVL(&t->root, key, elem);
+    t->root = insertAVL(t->root, key, elem);
 }
 
 static AVLTree searchRec(AVLTree t, size_t key) {
@@ -212,8 +159,8 @@ void * getNextTreeElem(BinaryTree t) {
         return NULL;
     }
 
-    if (node->right) 
-        moveIteratorFarthestLeft(node->right, t->iter); 
+    if (node->right)
+        moveIteratorFarthestLeft(node->right, t->iter);
 
     return node->elem;
 }
@@ -246,6 +193,22 @@ static void freeAVLTree(AVLTree t) {
     if (t && t->left) freeAVLTree(t->left);
     if (t && t->right) freeAVLTree(t->right);
     free(t);
+}
+
+static void treeprint(AVLTree root, int level)
+{
+        if (root == NULL)
+                return;
+        for (int i = 0; i < level; i++)
+                printf(i == level - 1 ? "|-" : "  ");
+
+        treeprint(root->left, level + 1);
+        treeprint(root->right, level + 1);
+}
+
+void PRINT(BinaryTree t)
+{
+    treeprint(t->root, 0);
 }
 
 void freeBinaryTree(BinaryTree t) {
