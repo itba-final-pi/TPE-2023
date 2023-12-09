@@ -1,6 +1,9 @@
 #include <stdio.h>
 
 #include "BinaryTree.h"
+#include "Stack.h"
+
+static void moveIteratorFarthestLeft(AVLTree current, Stack s);
 
 typedef struct NodeAVL {
     size_t key;
@@ -11,7 +14,7 @@ typedef struct NodeAVL {
 
 typedef struct BinaryTreeCDT {
     AVLTree root;
-    AVLTree iter;
+    Stack iter;
 } BinaryTreeCDT;
 
 BinaryTree newBinaryTree(void) {
@@ -174,6 +177,37 @@ static AVLTree searchRec(AVLTree t, size_t key) {
 void * search(BinaryTree t, size_t key) {
     AVLTree node;
     if ( t == NULL || (node = searchRec(t->root, key)) == NULL ) return NULL;
+    return node->elem;
+}
+
+void toBeginTreeIter(BinaryTree t) {
+    freeStack(t->iter);
+    t->iter = newStack();
+    moveIteratorFarthestLeft(t->root, t->iter);
+}
+
+int hasNextTreeElem(BinaryTree t) {
+    return t != NULL ? isEmptyStack(t->iter) : 0;
+}
+
+static void moveIteratorFarthestLeft(AVLTree current, Stack s) {
+    while (current && current->left) {
+        push(s, current);
+        current = current->left;
+    }
+    if (current) push(s, current);
+}
+
+void * getNextTreeElem(BinaryTree t) {
+    AVLTree node = NULL;
+
+    if ( isEmptyStack(t->iter) ||  (node = pop(t->iter)) == NULL  ) {
+        return NULL;
+    }
+
+    if (node->right) 
+        moveIteratorFarthestLeft(node->right, t->iter); 
+
     return node->elem;
 }
 

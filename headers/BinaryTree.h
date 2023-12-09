@@ -32,6 +32,12 @@ void insert(BinaryTree * t, size_t key, void * elem);
  */
 void * search(BinaryTree t, size_t key);
 
+void toBeginTreeIter(BinaryTree t);
+
+int hasNextTreeElem(BinaryTree t);
+
+void * getNextTreeElem(BinaryTree t);
+
 #ifdef DEBUG_RUN_TESTS
 
 AVLTree getBinaryTreeRoot(BinaryTree t);
