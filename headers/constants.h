@@ -6,6 +6,12 @@
 #define NUMBER_OF_FIELDS_STATIONS 4
 #define NUMBER_OF_FIELDS_TRIPS 6
 
+// date length including '\0'
+#define DATE_LEN 20
+#define SIZE_T_CHAR_LEN 20
+
+#define STACK_REALLOC_SIZE 20
+
 typedef enum
 {
     ID = 0,
@@ -24,8 +30,7 @@ typedef enum
     RIDEABLE_TYPE
 } FieldsTrips;
 
-// date length including '\0'
-#define DATE_LEN 20
+
 
 typedef enum
 {

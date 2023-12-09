@@ -69,3 +69,9 @@ Datasets\ Alumnos\ SMALL/
 
 # Out
 out/
+
+# Output files
+*.csv
+*.html
+
+

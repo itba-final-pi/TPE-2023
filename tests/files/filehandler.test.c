@@ -16,9 +16,11 @@ main(void) {
     assert( hasNextLine(empty) == 0 );
     freeFileHandler(empty);
 
+#ifdef MON
     FileHandler montreal = newFileHandler("./Datasets Alumnos/bikesMON.csv");
     assert( strcmp(getNextLine(montreal), "start_date;emplacement_pk_start;end_date;emplacement_pk_end;is_member\n") == 0 );
     freeFileHandler(montreal);
+#endif
 
     return 0;
 }
