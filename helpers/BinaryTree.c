@@ -250,5 +250,6 @@ static void freeAVLTree(AVLTree t) {
 
 void freeBinaryTree(BinaryTree t) {
     if (t && t->root) freeAVLTree(t->root);
+    if (t && t->iter) freeStack(t->iter);
     free(t);
 }
