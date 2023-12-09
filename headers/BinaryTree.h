@@ -3,7 +3,8 @@
 #ifndef _binary_tree_h
 #define _binary_tree_h
 
-typedef struct NodeAVL * BinaryTree;
+typedef struct NodeAVL * AVLTree;
+typedef struct BinaryTreeCDT * BinaryTree;
 
 /**
  * @brief Creates a new BinaryTree ADT
@@ -31,13 +32,19 @@ void insert(BinaryTree * t, size_t key, void * elem);
  */
 void * search(BinaryTree t, size_t key);
 
-BinaryTree getLeftNode(BinaryTree t);
+#ifdef DEBUG_RUN_TESTS
 
-BinaryTree getRightNode(BinaryTree t);
+AVLTree getBinaryTreeRoot(BinaryTree t);
 
-size_t getNodeKey(BinaryTree t);
+AVLTree getLeftNode(AVLTree t);
 
-void * getNodeElem(BinaryTree t);
+AVLTree getRightNode(AVLTree t);
+
+size_t getNodeKey(AVLTree t);
+
+void * getNodeElem(AVLTree t);
+
+#endif
 
 void freeBinaryTree(BinaryTree tp);
 

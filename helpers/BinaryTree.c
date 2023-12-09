@@ -1,6 +1,6 @@
 #include <stdio.h>
 
-#include "../headers/BinaryTree.h"
+#include "BinaryTree.h"
 
 typedef struct NodeAVL {
     size_t key;
@@ -9,26 +9,31 @@ typedef struct NodeAVL {
     int bf;
 } NodeAVL;
 
+typedef struct BinaryTreeCDT {
+    AVLTree root;
+    AVLTree iter;
+} BinaryTreeCDT;
+
 BinaryTree newBinaryTree(void) {
-    return NULL;
+    return calloc(1, sizeof(BinaryTreeCDT));
 }
 
-static void rotateLeft(BinaryTree * tp) {
-    BinaryTree parent = *tp, child = (*tp)->right;
+static void rotateLeft(AVLTree * tp) {
+    AVLTree parent = *tp, child = (*tp)->right;
     parent->right = child->left;
     child->left = parent;
     (*tp) = child;
 }
 
-static void rotateRight(BinaryTree * tp) {
-    BinaryTree parent = *tp, child = (*tp)->left;
+static void rotateRight(AVLTree * tp) {
+    AVLTree parent = *tp, child = (*tp)->left;
     parent->left = child->right;
     child->right = parent;
     (*tp) = child;
 }
 
-static void fixLeftImbalance(BinaryTree * tp) {
-    BinaryTree t, parent, child, * cptr;
+static void fixLeftImbalance(AVLTree * tp) {
+    AVLTree t, parent, child, * cptr;
     parent = *tp;
     cptr = &(parent->left);
     child = *cptr;
@@ -62,8 +67,8 @@ static void fixLeftImbalance(BinaryTree * tp) {
     }
 }
 
-static void fixRightImbalance(BinaryTree * tp) {
-    BinaryTree t, parent, child, * cptr;
+static void fixRightImbalance(AVLTree * tp) {
+    AVLTree t, parent, child, * cptr;
     parent = *tp;
     cptr = &(parent->right);
     child = *cptr;
@@ -96,8 +101,8 @@ static void fixRightImbalance(BinaryTree * tp) {
     }
 }
 
-static int insertAVL(BinaryTree * tp, size_t key, void * elem) {
-    BinaryTree t;
+static int insertAVL(AVLTree * tp, size_t key, void * elem) {
+    AVLTree t;
     int sign, delta;
     t = *tp;
 
@@ -149,10 +154,10 @@ static int insertAVL(BinaryTree * tp, size_t key, void * elem) {
 }
 
 void insert(BinaryTree * t, size_t key, void * elem) {
-    insertAVL(t, key, elem);
+    insertAVL(&(*t)->root, key, elem);
 }
 
-static BinaryTree searchRec(BinaryTree t, size_t key) {
+static AVLTree searchRec(AVLTree t, size_t key) {
     if (t == NULL) return NULL;
 
     int sign = key - t->key;
@@ -167,29 +172,41 @@ static BinaryTree searchRec(BinaryTree t, size_t key) {
 }
 
 void * search(BinaryTree t, size_t key) {
-    BinaryTree node;
-    if ( t == NULL || (node = searchRec(t, key)) == NULL ) return NULL;
+    AVLTree node;
+    if ( t == NULL || (node = searchRec(t->root, key)) == NULL ) return NULL;
     return node->elem;
 }
 
-BinaryTree getLeftNode(BinaryTree t) {
+#ifdef DEBUG_RUN_TESTS
+
+AVLTree getBinaryTreeRoot(BinaryTree t) {
+    return t->root;
+}
+
+AVLTree getLeftNode(AVLTree t) {
     return t->left;
 }
 
-BinaryTree getRightNode(BinaryTree t) {
+AVLTree getRightNode(AVLTree t) {
     return t->right;
 }
 
-size_t getNodeKey(BinaryTree t) {
+size_t getNodeKey(AVLTree t) {
     return t->key;
 }
 
-void * getNodeElement(BinaryTree t) {
+void * getNodeElement(AVLTree t) {
     return t->elem;
 }
 
-void freeBinaryTree(BinaryTree tp) {
-    if (tp && tp->left) freeBinaryTree(tp->left);
-    if (tp && tp->right) freeBinaryTree(tp->right);
-    free(tp);
+#endif
+
+void static freeAVLTree(AVLTree t) {
+    if (t && t->left) freeAVLTree(t->left);
+    if (t && t->right) freeAVLTree(t->right);
+}
+
+void freeBinaryTree(BinaryTree t) {
+    if (t && t->root) freeAVLTree(t->root);
+    free(t);
 }

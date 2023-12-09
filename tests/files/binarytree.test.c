@@ -18,20 +18,20 @@ main(void) {
     insert(&tree, 30, NULL);
     insert(&tree, 40, NULL);
 
-    assert( getNodeKey(tree) == 20 );
-    assert( getNodeKey(getLeftNode(tree)) == 10 );
-    assert( getNodeKey(getRightNode(tree)) == 30 );
-    assert( getNodeKey(getRightNode(getRightNode(tree))) == 40 );
+    assert( getNodeKey(getBinaryTreeRoot(tree)) == 20 );
+    assert( getNodeKey(getLeftNode(getBinaryTreeRoot(tree))) == 10 );
+    assert( getNodeKey(getRightNode(getBinaryTreeRoot(tree))) == 30 );
+    assert( getNodeKey(getRightNode(getRightNode(getBinaryTreeRoot(tree)))) == 40 );
 
     insert(&tree, 50, NULL);
-    assert( getNodeKey(getRightNode(tree)) == 40 );
+    assert( getNodeKey(getRightNode(getBinaryTreeRoot(tree))) == 40 );
 
     insert(&tree, 25, &value);
 
-    assert( getNodeKey(tree) == 30 );
-    assert( getNodeKey(getLeftNode(tree)) == 20 );
-    assert( getNodeKey(getRightNode(tree)) == 40 );
-    assert( getNodeKey(getRightNode(getLeftNode(tree))) == 25 );
+    assert( getNodeKey(getBinaryTreeRoot(tree)) == 30 );
+    assert( getNodeKey(getLeftNode(getBinaryTreeRoot(tree))) == 20 );
+    assert( getNodeKey(getRightNode(getBinaryTreeRoot(tree))) == 40 );
+    assert( getNodeKey(getRightNode(getLeftNode(getBinaryTreeRoot(tree)))) == 25 );
 
     assert( search(tree, 10) == (void *) 10 );
     assert( search(tree, 25) == (void *) &value );
