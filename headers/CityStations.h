@@ -74,9 +74,10 @@ void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN]);
 void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN]);
 
 /**
- * returns the number of started trips in the given date
+ * orders the stations in the city by trips
  * 
  * @param city CityStations ADT
+ * @note after calling this function, check erno is equal to ENOMEM
  * @return void
  */
 void orderStationsByTrips(CityStations city);
