@@ -9,9 +9,9 @@
 #include "csvTable.h"
 #include "constants.h"
 
-#define QUERY_1_NAME "query1"
-#define QUERY_2_NAME "query2"
-#define QUERY_3_NAME "query3"
+#define QUERY_1_OUTPUT_FILE "query1"
+#define QUERY_2_OUTPUT_FILE "query2"
+#define QUERY_3_OUTPUT_FILE "query3"
 
 #define QUERY_1_COLUMNS 4
 #define QUERY_2_COLUMNS 3
@@ -79,8 +79,8 @@ int main(int argc, char *argv[])
 
 	// ---- QUERY 1 ----
 
-	html_table = newTable( QUERY_1_NAME ".html", QUERY_1_COLUMNS, QUERY_1_HEADERS );
-	csv_table = newCsvTable( QUERY_1_NAME ".csv", QUERY_1_COLUMNS, QUERY_1_HEADERS );
+	html_table = newTable( QUERY_1_OUTPUT_FILE ".html", QUERY_1_COLUMNS, QUERY_1_HEADERS );
+	csv_table = newCsvTable( QUERY_1_OUTPUT_FILE ".csv", QUERY_1_COLUMNS, QUERY_1_HEADERS );
 
 	toBeginTripsOrder(city_stations);
 	while(hasNextTripsOrder(city_stations)) 
@@ -107,8 +107,8 @@ int main(int argc, char *argv[])
 
 	// ---- QUERY 2 ----
 
-	html_table = newTable( QUERY_2_NAME ".html", QUERY_2_COLUMNS, QUERY_2_HEADERS );
-	csv_table = newCsvTable( QUERY_2_NAME ".csv",  QUERY_2_COLUMNS, QUERY_2_HEADERS );
+	html_table = newTable( QUERY_2_OUTPUT_FILE ".html", QUERY_2_COLUMNS, QUERY_2_HEADERS );
+	csv_table = newCsvTable( QUERY_2_OUTPUT_FILE ".csv",  QUERY_2_COLUMNS, QUERY_2_HEADERS );
 
 	toBeginAlphabeticOrder(city_stations);
 	while(hasNextAlphabeticOrder(city_stations)) 
@@ -142,8 +142,8 @@ int main(int argc, char *argv[])
 
 	// ---- QUERY 3 ----
 
-	html_table = newTable( QUERY_3_NAME ".html", QUERY_3_COLUMNS, QUERY_3_HEADERS );
-	csv_table = newCsvTable( QUERY_3_NAME ".csv", QUERY_3_COLUMNS, QUERY_3_HEADERS );
+	html_table = newTable( QUERY_3_OUTPUT_FILE ".html", QUERY_3_COLUMNS, QUERY_3_HEADERS );
+	csv_table = newCsvTable( QUERY_3_OUTPUT_FILE ".csv", QUERY_3_COLUMNS, QUERY_3_HEADERS );
 
 	WeekDays day;
 	for(day=MONDAY; day < NUMBER_OF_WEEK_DAYS; day++){
