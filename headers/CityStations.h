@@ -26,8 +26,7 @@ void freeCityStations(CityStations city);
  * @param city CityStations ADT
  * @return number of stations in the city
  */
-size_t getStationsCount(CityStations city);
-
+size_t getStationsCount(const CityStations city);
 
 // To replace addStation -- binary trees needed
 /**
@@ -37,7 +36,7 @@ size_t getStationsCount(CityStations city);
  * @param station_info station to add
  * @return 0 if the station was added, 1 if an error ocurred
  */
-int loadStation(CityStations city, const char * station_info);
+int loadStation(CityStations city, const size_t id, const char *name, const double latitude, const double longitude);
 
 /**
  * adds a trip to the city
@@ -46,7 +45,7 @@ int loadStation(CityStations city, const char * station_info);
  * @param trip_info trip to add
  * @return 0 if the trip was added, 1 if an error ocurred
  */
-int processTrip(CityStations city, const char *trip_info);
+int processTrip(CityStations city, const char *start_date, const char *end_date, const size_t start_station_id, const size_t end_station_id, const int is_member);
 
 /**
  * returns the station with the given id
@@ -55,28 +54,31 @@ int processTrip(CityStations city, const char *trip_info);
  * @param id id of the station
  * @return station with the given id, NULL if it doesn't exist
  */
-BikeStation getStation(CityStations city, size_t id);
+BikeStation getStation(const CityStations city, const size_t id);
 
 /**
- * increments the number of started trips in the given date
+ * returns the amount of started trips in a day of the week
  * 
  * @param city CityStations ADT
- * @return void
+ * @param day day of the week (0-6) (Monday-Sunday)
+ * @return amount of started trips in the given day
  */
-void incrementStartedTripsByDate(CityStations city, char date[DATE_LEN]);
+size_t getStartedTripsByDay(CityStations city, WeekDays day);
 
 /**
- * increments the number of ended trips in the given date
+ * returns the amount of ended trips in a day of the week
  * 
  * @param city CityStations ADT
- * @return void
+ * @param day day of the week (0-6) (Monday-Sunday)
+ * @return amount of ended trips in the given day
  */
-void incrementEndedTripsByDate(CityStations city, char date[DATE_LEN]);
+size_t getEndedTripsByDay(CityStations city, const WeekDays day);
 
 /**
- * returns the number of started trips in the given date
+ * orders the stations in the city by trips
  * 
  * @param city CityStations ADT
+ * @note after calling this function, check erno is equal to ENOMEM
  * @return void
  */
 void orderStationsByTrips(CityStations city);
@@ -105,7 +107,6 @@ int hasNextAlphabeticOrder(CityStations city);
  */
 BikeStation nextAlphabeticOrder(CityStations city);
 
-
 /**
  * set the iterator to the first station in the city, in increasing order of started trips
  * 
@@ -129,6 +130,5 @@ int hasNextTripsOrder(CityStations city);
  * @return next station
  */
 BikeStation nextTripsOrder(CityStations city);
-
 
 #endif

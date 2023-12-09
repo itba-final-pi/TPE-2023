@@ -19,7 +19,7 @@ typedef struct BikeStationCDT {
 	Trip oldestTrip;
 } BikeStationCDT;
 
-BikeStation newBikeStation(size_t id, char * name, double latitude, double longitude){
+BikeStation newBikeStation(const size_t id, const char * name, const double latitude, const double longitude){
     BikeStation new = calloc(1, sizeof(BikeStationCDT));
     new->id = id;
     new->name = malloc(strlen(name) + 1);
@@ -34,7 +34,7 @@ void freeStation(BikeStation station){
     free(station);
 }
 
-void setOldestTrip(BikeStation startStation, BikeStation endStation, char startedAt[DATE_LEN]) {
+void setOldestTrip(BikeStation startStation, BikeStation endStation, const char startedAt[DATE_LEN]) {
 	startStation->oldestTrip.endStation = endStation;
 	strcpy(startStation->oldestTrip.startedAt, startedAt);
 }
@@ -79,7 +79,7 @@ BikeStation getOldestTripEndStation(BikeStation station) {
 char * getOldestTripDate(BikeStation station) {
     if (station->oldestTrip.startedAt[0] == '\0')
         return NULL;
-    char * aux = malloc(strlen(station->oldestTrip.startedAt) + 1);
+    char * aux = malloc(DATE_LEN);
     return strcpy(aux, station->oldestTrip.startedAt);
 }
 
@@ -99,7 +99,7 @@ int compareStationsByTrips(BikeStation a, BikeStation b){
     return aTrips - bTrips;
 }
 
-int isOlderTrip(BikeStation station, char date[DATE_LEN]){
+int isOlderTrip(const BikeStation station, const char date[DATE_LEN]){
     if (station->oldestTrip.startedAt[0] == '\0'){
         return 1;
     }

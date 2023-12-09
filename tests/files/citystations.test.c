@@ -12,6 +12,8 @@
 #include "CityStations.h"
 #include "FileHandler.h"
 #include "constants.h"
+#include "loadStations.h"
+#include "processTrips.h"
 
 int
 main(void) {
@@ -19,14 +21,7 @@ main(void) {
 #ifdef MON
     CityStations new = newCityStations();
     
-    FileHandler file = newFileHandler("./Datasets Alumnos/stationsMON.csv");
-
-    char * line = getNextLine(file); // ignore header line
-
-    // While there's a line, AND it is not empty
-    while( hasNextLine(file) && (line = getNextLine(file)) ) {
-        loadStation(new, line);
-    }
+    loadStations(new, "./Datasets Alumnos/stationsMON.csv");
 
     BikeStation station = newBikeStation(1286, "Evans / Clark", 45.5110837, -73.5679775);
 
@@ -36,15 +31,9 @@ main(void) {
     assert( getLongitude(getStation(new, 1286)) == getLongitude(station) );
     assert( getLatitude(getStation(new, 1286)) == getLatitude(station) );
 
-    freeFileHandler(file);
-    //process trip
-    file = newFileHandler("./Datasets Alumnos/bikesMON.csv");
-    line = getNextLine(file); // ignore header line
 
-    // While there's a line, AND it is not empty
-    while( hasNextLine(file) && (line = getNextLine(file)) ) {
-        processTrip(new, line);
-    }
+    //process trip
+    processTrips(new, "./Datasets Alumnos/bikesMON.csv");
 
     orderStationsByTrips(new);
     size_t total_stations = getStationsCount(new);
@@ -85,20 +74,12 @@ main(void) {
 
     freeStation(station);
     freeCityStations(new);
-    freeFileHandler(file);
 #endif
 
 #ifdef NYC
     CityStations new = newCityStations();
     
-    FileHandler file = newFileHandler("./Datasets Alumnos/stationsNYC.csv");
-
-    char * line = getNextLine(file); // ignore header line
-
-    // While there's a line, AND it is not empty
-    while( hasNextLine(file) && (line = getNextLine(file)) ) {
-        loadStation(new, line);
-    }
+    loadStations(new, "./Datasets Alumnos/stationsNYC.csv");
 
     BikeStation station = newBikeStation(728804, "Riverside Dr & W 72 St", 40.7805779901033, -73.9856243133545);
 
@@ -107,16 +88,9 @@ main(void) {
     assert( compareStationsByName(getStation(new, 728804), station) == 0 );
     assert( getLongitude(getStation(new, 728804)) == getLongitude(station) );
     assert( getLatitude(getStation(new, 728804)) == getLatitude(station) );
-
-    freeFileHandler(file);
+	
     //process trip
-    file = newFileHandler("./Datasets Alumnos/bikesNYC.csv");
-    line = getNextLine(file); // ignore header line
-
-    // While there's a line, AND it is not empty
-    while( hasNextLine(file) && (line = getNextLine(file)) ) {
-        processTrip(new, line);
-    }
+    processTrips(new, "./Datasets Alumnos/bikesNYC.csv");
 
     orderStationsByTrips(new);
     size_t total_stations = getStationsCount(new);
@@ -157,7 +131,6 @@ main(void) {
 
     freeStation(station);
     freeCityStations(new);
-    freeFileHandler(file);
 #endif
 
     return 0;

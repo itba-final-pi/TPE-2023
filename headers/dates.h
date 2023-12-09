@@ -4,6 +4,6 @@
 #ifndef _dates_h_
 #define _dates_h_
 
-int dateCompare(char date1[DATE_LEN], char date2[DATE_LEN]);
+int dateCompare(const char date1[DATE_LEN], const char date2[DATE_LEN]);
 
 #endif

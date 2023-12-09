@@ -12,6 +12,9 @@
 
 #define STACK_REALLOC_SIZE 20
 
+#define LINE_SIZE 255
+#define DELIM ";"
+
 typedef enum
 {
     ID = 0,
@@ -30,7 +33,18 @@ typedef enum
     RIDEABLE_TYPE
 } FieldsTrips;
 
+typedef enum
+{
+	MONDAY = 0,
+	TUESDAY,
+	WEDNESDAY,
+	THURSDAY,
+	FRIDAY,
+	SATURDAY,
+	SUNDAY,
+} WeekDays;
 
+#define NUMBER_OF_WEEK_DAYS (SUNDAY - MONDAY + 1)
 
 typedef enum
 {
