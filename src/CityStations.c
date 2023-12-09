@@ -295,9 +295,9 @@ int processTrip(CityStations city, const char *trip_info)
     return 0;
 }
 
-size_t getStartedTripsByDay(CityStations city, size_t day)
+size_t getStartedTripsByDay(CityStations city, WeekDays day)
 {
-    if (day >= NUMBER_OF_WEEK_DAYS)
+    if (0 <= day && day >= NUMBER_OF_WEEK_DAYS)
     {
         errno = EINVAL;
         return 0;
@@ -305,9 +305,9 @@ size_t getStartedTripsByDay(CityStations city, size_t day)
     return city->started_trips_by_day[day];
 }
 
-size_t getEndedTripsByDay(CityStations city, size_t day)
+size_t getEndedTripsByDay(CityStations city, WeekDays day)
 {
-    if (day >= NUMBER_OF_WEEK_DAYS)
+    if (0 <= day && day >= NUMBER_OF_WEEK_DAYS)
     {
         errno = EINVAL;
         return 0;

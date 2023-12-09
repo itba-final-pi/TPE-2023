@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
+#include <errno.h>
 
 #include "CityStations.h"
 #include "FileHandler.h"
@@ -144,9 +145,13 @@ int main(int argc, char *argv[])
 	html_table = newTable( QUERY_3_NAME ".html", QUERY_3_COLUMNS, QUERY_3_HEADERS );
 	csv_table = newCsvTable( QUERY_3_NAME ".csv", QUERY_3_COLUMNS, QUERY_3_HEADERS );
 
-	for(int day=MONDAY; day < NUMBER_OF_WEEK_DAYS; day++){
-		size_t started_trips = getStartedTripsByWeekDay(day);
-		size_t ended_trips = getEndedTripsByWeekDay(day);
+	WeekDays day;
+	for(day=MONDAY; day < NUMBER_OF_WEEK_DAYS; day++){
+		char started_trips[SIZE_T_CHAR_LEN];
+		char ended_trips[SIZE_T_CHAR_LEN];
+		
+		sprintf(started_trips, "%zu", getStartedTripsByDay(city_stations, day));
+		sprintf(ended_trips, "%zu",  getEndedTripsByDay(city_stations, day));
 
 		addHTMLRow(html_table, week_day_names[day], started_trips, ended_trips);
 		addCsvRow(csv_table, week_day_names[day], started_trips, ended_trips);

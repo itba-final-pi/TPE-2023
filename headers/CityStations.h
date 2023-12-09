@@ -63,7 +63,7 @@ BikeStation getStation(CityStations city, size_t id);
  * @param day day of the week (0-6) (Monday-Sunday)
  * @return amount of started trips in the given day
  */
-size_t getStartedTripsByDay(CityStations city, size_t day);
+size_t getStartedTripsByDay(CityStations city, WeekDays day);
 
 /**
  * returns the amount of ended trips in a day of the week
@@ -72,7 +72,7 @@ size_t getStartedTripsByDay(CityStations city, size_t day);
  * @param day day of the week (0-6) (Monday-Sunday)
  * @return amount of ended trips in the given day
  */
-size_t getEndedTripsByDay(CityStations city, size_t day);
+size_t getEndedTripsByDay(CityStations city, WeekDays day);
 
 /**
  * orders the stations in the city by trips
