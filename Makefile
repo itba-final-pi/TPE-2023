@@ -13,6 +13,17 @@ OBJECTS := $(SOURCES:%.c=%.o)
 # Allows defining the city when calling make
 ifneq ($(CITY),)
 	FLAGS += -D$(CITY)
+
+# Target is New York City binary
+	ifeq ($(CITY),NYC)
+		NAME = bikeSharingNYC
+	endif
+
+# Target is Montreal
+	ifeq ($(CITY),MON)
+		NAME = bikeSharingMON
+	endif
+
 endif
 
 # Compiles main.c file separately
@@ -37,7 +48,8 @@ test: ./CTable/htmlTable.o
 # Build and link together all sources (NOT THE TESTS)
 .PHONY: all
 all: main.o $(OBJECTS) ./CTable/htmlTable.o
-	$(COMPILER) $(LINKER_FLAGS) $^ -o Binary.out
+	$(COMPILER) $(LINKER_FLAGS) $^ -o $(NAME)
+	make clean
 
 # Cleans out all object and binary files built
 .PHONY: clean
