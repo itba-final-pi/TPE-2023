@@ -44,8 +44,11 @@ typedef struct CityStationsCDT
 } CityStationsCDT;
 
 
-//TODO: REFACTOR THIS(scoped functions)
 typedef int (*compareStations)(const BikeStation, const BikeStation);
+
+
+// ---- PROTOTYPES ----
+// --------------------
 
 /**
  * adds a station to the list in order
@@ -83,6 +86,10 @@ static void incrementStartedTripsByDate(CityStations city, const char date[DATE_
  * @return void
  */
 static void incrementEndedTripsByDate(CityStations city, const char date[DATE_LEN]);
+
+
+// ---- FUNCTION DEFINITIONS ----
+// ------------------------------
 
 CityStations newCityStations(void)
 {
