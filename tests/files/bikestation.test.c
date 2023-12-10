@@ -1,7 +1,3 @@
-// This file is meant to be a template for all other tests
-// This file is excluded from test runs and is not counted towards the total amount of tests ran
-
-// Make sure assert macro expressions work correctly 👇
 #undef NDEBUG
 
 #include <stdlib.h>
