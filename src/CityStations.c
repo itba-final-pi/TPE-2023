@@ -3,7 +3,6 @@
 #include "BinaryTree.h"
 
 // HELPERS
-#include "recalloc.h"
 #include "FileHandler.h"
 #include "constants.h"
 
