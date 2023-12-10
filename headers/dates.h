@@ -13,12 +13,4 @@
  */
 int dateCompare(const char date1[DATE_LEN], const char date2[DATE_LEN]);
 
-/**
- * @brief A more efficient way of getting the week day from a ISO 8601 date than using <time.h>.
- * 		Assumes that the date is well formatted.
- * @param date a string representing an ISO 8601 date.
- * @return the WeekDay (see enum in constants.h for reference).
- */
-WeekDays isoToWeekDay(const char date[DATE_LEN]);
-
 #endif
