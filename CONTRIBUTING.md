@@ -2,14 +2,6 @@
 
 This repository is intended to keep track of "TPE Programación Imperativa (72.31)".
 
-## Members
-
-| Name                   | Student ID | Email                      |
-|------------------------|------------|----------------------------|
-| Luca Mancuso           | 64150      | lmancuso@itba.edu.ar       |
-| Santiago Manuel Torres | 64563      | torres.kilmes@gmail.com    |
-| Tomas Pietravallo      | 64288      | hello@tomaspietravallo.com |
-
 ## Contributions
 
 >[!IMPORTANT]
@@ -25,6 +17,8 @@ Issues may be created to keep track, highlight or assign tasks to other members.
 
 ## Style
 
+> [Code styling guidelines are found on this document](https://docs.google.com/document/d/1-xe6ERwB0OU9m1x_zf3zJU-DJbollOKGa27T5gkCNco/edit?usp=sharing)
+
 All commits and Pull Requests **must** follow [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) using the following types:
 
 | Type     | Name                      | Description                                               |
@@ -39,8 +33,6 @@ All commits and Pull Requests **must** follow [Conventional Commits](https://www
 | refactor | Code refactoring          | Code refactoring                                          |
 | style    | Style                     | Improve code style                                        |
 | test     | Test                      | Add, fix, expand testing                                  |
-
-Where scope must be either `front`, `back` or unspecified if neither applies to the changes being made.
 
 ### Language
 
