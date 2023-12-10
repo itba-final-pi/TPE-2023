@@ -29,8 +29,10 @@ BinaryTree newBinaryTree(void);
  * @param t tree
  * @param key size_t key 
  * @param elem element (pointer)
+ * 
+ * @return int 1 if the element was added, 0 if the key already existed
  */
-void insert(BinaryTree t, size_t key, void * elem);
+int insert(BinaryTree t, size_t key, void * elem);
 
 /**
  * @brief Returns the elem pointer corresponding to the key within the tree

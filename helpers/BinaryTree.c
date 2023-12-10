@@ -8,7 +8,7 @@
 static int getHeight(AVLTree n);
 static AVLTree rotateLeft(AVLTree tp);
 static AVLTree rotateRight(AVLTree tp);
-static AVLTree insertAVL(AVLTree tp, size_t key, void * elem);
+static AVLTree insertAVL(AVLTree tp, size_t key, void * elem, int * added);
 static AVLTree searchRec(AVLTree t, size_t key);
 static void moveIteratorFarthestLeft(AVLTree current, Stack s);
 static void freeAVLTree(AVLTree t);
@@ -70,7 +70,7 @@ static AVLTree rotateLeft(AVLTree parent){
     return child; 
 }
 
-static AVLTree insertAVL(AVLTree tp, size_t key, void * elem){
+static AVLTree insertAVL(AVLTree tp, size_t key, void * elem, int * added){
     // Create/insert new node
     if (tp == NULL) {
         AVLTree node = malloc(sizeof(NodeAVL));
@@ -78,6 +78,7 @@ static AVLTree insertAVL(AVLTree tp, size_t key, void * elem){
         node->elem = elem;
         node->left = node->right = NULL;
         node->height = 1;
+        *added = 1;
         return node;
     }
 
@@ -86,9 +87,9 @@ static AVLTree insertAVL(AVLTree tp, size_t key, void * elem){
 
     // Perform recursive insertion
     if (key < tp->key) {
-        tp->left  = insertAVL(tp->left, key, elem);
+        tp->left  = insertAVL(tp->left, key, elem, added);
     } else { // key > tp->key
-        tp->right = insertAVL(tp->right, key, elem);
+        tp->right = insertAVL(tp->right, key, elem, added);
     }
 
     tp->height = MAX(getHeight(tp->left), getHeight(tp->right)) + 1;
@@ -110,8 +111,10 @@ static AVLTree insertAVL(AVLTree tp, size_t key, void * elem){
     return tp;
 }
 
-void insert(BinaryTree t, size_t key, void * elem) {
-    t->root = insertAVL(t->root, key, elem);
+int insert(BinaryTree t, size_t key, void * elem) {
+    int added = 0;
+    t->root = insertAVL(t->root, key, elem, &added);
+    return added;
 }
 
 static AVLTree searchRec(AVLTree t, size_t key) {
