@@ -21,9 +21,9 @@ This repository oversees the development of the [TPE as described here](https://
   - [Development, Testing, Continuous Integration](#development-testing-continuous-integration)
   - [Discussion](#discussion)
     - [Git](#git)
-    - [Optimizations](#optimizations)
     - [Testing](#testing)
       - [Pampero](#pampero)
+      - [Test cases](#test-cases)
 
 
 ## Members
@@ -146,10 +146,6 @@ We recognize the Git history may not be as clean as it could.
 
 We strived to move fast and work asynchronously on different tasks at the same time, which in our case, meant working across branches and performing merges.
 
-### Optimizations
-
-strptime
-
 ### Testing
 
 The testing pipeline proved itself to be incredibly useful in ensuring a common baseline, and helping catch bugs/memory leaks. However, there are quite a few ways it could be improved, most notably:
@@ -159,4 +155,8 @@ The testing pipeline proved itself to be incredibly useful in ensuring a common 
 All tests are ran on the same Pampero user, and the test runners could potentially crash with each other. This would result in a failed test.
 
 Luckily it is quite easy to manually re-run failed tests on CI, and test runners never crashed throughout the development process, as the pipeline wasn't hit often enough for this to happen.
+
+#### Test cases
+
+We recognize test cases are not as broad as they could be. We tried our best to catch all common bugs with test cases, and also test manually frequently to make sure nothing slipped through the cracks
 
