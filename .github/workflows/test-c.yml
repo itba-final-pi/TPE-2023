@@ -4,6 +4,8 @@ name: Compile & Test C
 env:
   DATASET_URL: https://storage.googleapis.com/datasets-tpe/Datasets%20Alumnos.zip
   DATASET_NAME: Datasets Alumnos
+  DATASET_URL_SMALL: https://storage.googleapis.com/datasets-tpe/Datasets%20Alumnos%20SMALL.zip
+  DATASET_NAME_SMALL: Datasets Alumnos SMALL
 
 # Controls when the workflow will run
 on:
@@ -51,6 +53,7 @@ jobs:
         with:
           path: |
             ./${{ env.DATASET_NAME }}
+            ./${{ env.DATASET_NAME_SMALL }}
           key: ${{ runner.os }}
     
       - name: Install Datasets
@@ -58,6 +61,10 @@ jobs:
         run: |
           curl -o data.zip ${{ env.DATASET_URL }}
           unzip data.zip -d "${{ env.DATASET_NAME }}"
+
+          rm -f data.zip
+          curl -o data.zip "${{ env.DATASET_URL_SMALL }}"
+          unzip data.zip -d "${{ env.DATASET_NAME_SMALL }}"
 
       - name: Build and test
         shell: bash {0}
