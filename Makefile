@@ -39,16 +39,6 @@ test: ./CTable/htmlTable.o
 all: main.o $(OBJECTS) ./CTable/htmlTable.o
 	$(COMPILER) $(LINKER_FLAGS) $^ -o Binary.out
 
-# Debugging
-.PHONY: debug_make
-debug_make:
-	@echo $(MAKECMDGOALS)
-	@echo $(OBJECTS)
-	@echo $(SOURCES)
-	@echo $(FLAGS)
-	@echo $(LINKER_FLAGS)
-	@echo $(TEST_FLAGS)
-
 # Cleans out all object and binary files built
 .PHONY: clean
 clean:
