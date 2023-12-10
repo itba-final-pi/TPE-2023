@@ -33,7 +33,7 @@ WeekDays isoToWeekDay(const char date[DATE_LEN]){
 		// A formula developed by Michael Keith (Mathematician and engineer) to turn a Gregorian date into a numerical day of the week.
 		// Modified so the week starts on Monday (as in WeekDays enum in constants.h).
 		int weekday  = (d += m < 3 ? y-- : y - 2, 23*m/9 + d + 4 + y/4- y/100 + y/400)%7;
-		weekday = weekday - 1 > 0 ? weekday - 1 ? NUMBER_OF_WEEK_DAYS - 1;
+		weekday = weekday - 1 > 0 ? weekday - 1 : NUMBER_OF_WEEK_DAYS - 1;
 
 		return weekday;
 }
