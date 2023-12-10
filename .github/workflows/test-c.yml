@@ -49,21 +49,29 @@ jobs:
           ref: ${{ github.ref }}
 
       - uses: actions/cache@v3
-        id: datasets-alumnos
+        id: datasets-alumnos-large
         with:
           path: |
             ./${{ env.DATASET_NAME }}
+          key: ${{ runner.os }}-large
+          
+      - uses: actions/cache@v3
+        id: datasets-alumnos-small
+        with:
+          path: |
             ./${{ env.DATASET_NAME_SMALL }}
-          key: ${{ runner.os }}
+          key: ${{ runner.os }}-small
     
-      - name: Install Datasets
-        if: steps.datasets-alumnos.outputs.cache-hit != 'true'
+      - name: Install Dataset (LARGE)
+        if: steps.datasets-alumnos-large.outputs.cache-hit != 'true'
         run: |
           curl -o data.zip ${{ env.DATASET_URL }}
           unzip data.zip -d "${{ env.DATASET_NAME }}"
 
-          rm -f data.zip
-          curl -o data.zip "${{ env.DATASET_URL_SMALL }}"
+      - name: Install Dataset (SMALL)
+        if: steps.datasets-alumnos-small.outputs.cache-hit != 'true'
+        run: |
+          curl -o data.zip ${{ env.DATASET_URL_SMALL }}
           unzip data.zip -d "${{ env.DATASET_NAME_SMALL }}"
 
       - name: Build and test
