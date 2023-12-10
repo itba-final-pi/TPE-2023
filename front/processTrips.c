@@ -23,6 +23,10 @@ static const int fields_trips[NUMBER_OF_FIELDS_TRIPS] = {START_DATE, START_STATI
 
 void processTrips(CityStations city_stations, char * file_name){
 		FileHandler file = newFileHandler(file_name);
+		if (file == NULL || errno != 0) {
+			freeFileHandler(file);
+			return;
+		}
 
 		char * line = getNextLine(file); // ignore header line
 

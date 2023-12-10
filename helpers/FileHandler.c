@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <errno.h>
 
 #include "FileHandler.h"
 
@@ -12,7 +13,7 @@ FileHandler newFileHandler(char * file) {
     FileHandler new = calloc(1, sizeof(FileHandlerCDT));
     new->file = fopen(file, "r");
 
-    if (new->file == NULL) {
+    if (new->file == NULL || errno == ENOENT) {
         // ERROR
         free(new);
         return NULL;

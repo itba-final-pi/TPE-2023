@@ -4,6 +4,7 @@
 #include <stdio.h>
 #include <assert.h>
 #include <string.h>
+#include <errno.h>
 
 #include "tests.h"
 
@@ -15,6 +16,8 @@ main(void) {
     assert( getNextLine(empty) == NULL );
     assert( hasNextLine(empty) == 0 );
     freeFileHandler(empty);
+    assert( errno == ENOENT );
+    errno = 0;
 
 #ifdef MON
     FileHandler montreal = newFileHandler("./Datasets Alumnos/bikesMON.csv");

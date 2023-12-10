@@ -151,6 +151,8 @@ BikeStation getStation(CityStations city, size_t id)
 
 void freeCityStations(CityStations city)
 {
+	VALIDATE_ARGS(city == NULL,)
+
 	toBeginTreeIter(city->stations);
 	BikeStation station_aux;
 	while ((station_aux = (BikeStation)getNextTreeElem(city->stations)) != NULL)
@@ -178,18 +180,14 @@ void freeCityStations(CityStations city)
 
 int processTrip(CityStations city, const char *start_date, const char *end_date, const size_t start_station_id, const size_t end_station_id, const int is_member)
 {
-	if (city == NULL)
-	{
-		errno = EINVAL;
-		return ERROR;
-	}
+	VALIDATE_ARGS(city == NULL, ERROR)
 
 	BikeStation start_station = search(city->stations, start_station_id);
 	BikeStation end_station = search(city->stations, end_station_id);
 
 	// Both stations should exist in our struct
 	if (!start_station || !end_station)
-		return 0;
+		return ERROR;
 
 	// Checks that the trip is not circular and its date is older to update oldest trip
 	if (start_station_id != end_station_id && isOlderTrip(start_station, start_date))
@@ -205,26 +203,18 @@ int processTrip(CityStations city, const char *start_date, const char *end_date,
 	incrementStartedTripsByDate(city, start_date);
 	incrementEndedTripsByDate(city, end_date);
 
-	return 0;
+	return OK;
 }
 
 size_t getStartedTripsByDay(CityStations city, WeekDays day)
 {
-	if (0 <= day && day >= NUMBER_OF_WEEK_DAYS)
-	{
-		errno = EINVAL;
-		return 0;
-	}
+	VALIDATE_ARGS(city == NULL || day < 0 || day >= NUMBER_OF_WEEK_DAYS, 0)
 	return city->started_trips_by_day[day];
 }
 
 size_t getEndedTripsByDay(CityStations city, WeekDays day)
 {
-	if (0 <= day && day >= NUMBER_OF_WEEK_DAYS)
-	{
-		errno = EINVAL;
-		return 0;
-	}
+	VALIDATE_ARGS(city == NULL || day < 0 || day >= NUMBER_OF_WEEK_DAYS, 0)
 	return city->ended_trips_by_day[day];
 }
 
@@ -248,6 +238,7 @@ static void incrementEndedTripsByDate(CityStations city, const char date[DATE_LE
 
 void orderStationsByTrips(CityStations city)
 {
+	VALIDATE_ARGS(city == NULL,)
 	int error = OK;
 	toBeginTreeIter(city->stations);
 	BikeStation station;
@@ -278,16 +269,19 @@ BikeStation nextAlphabeticOrder(CityStations city)
 
 void toBeginTripsOrder(CityStations city)
 {
+	VALIDATE_ARGS(city == NULL,)
 	city->current_station_by_trips = city->stations_by_trips;
 }
 
 int hasNextTripsOrder(CityStations city)
 {
+	VALIDATE_ARGS(city == NULL, 0)
 	return city->current_station_by_trips != NULL;
 }
 
 BikeStation nextTripsOrder(CityStations city)
 {
+	VALIDATE_ARGS(city == NULL, NULL)
 	BikeStation station = city->current_station_by_trips->station;
 	city->current_station_by_trips = city->current_station_by_trips->next;
 	return station;

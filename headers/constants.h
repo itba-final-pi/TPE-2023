@@ -46,6 +46,8 @@ typedef enum
 
 #define NUMBER_OF_WEEK_DAYS (SUNDAY - MONDAY + 1)
 
+#define VALIDATE_ARGS(condition, rtn) if(condition) { errno = EINVAL ; return rtn;}
+
 typedef enum
 {
     OK = 0,
