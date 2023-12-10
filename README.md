@@ -15,6 +15,7 @@ This repository oversees the development of the [TPE as described here](https://
   - [Table of contents](#table-of-contents)
   - [Members](#members)
   - [Compilation](#compilation)
+  - [Running the compiled binary](#running-the-compiled-binary)
   - [File structure](#file-structure)
   - [Speed](#speed)
   - [Development, Testing, Continuous Integration](#development-testing-continuous-integration)
@@ -52,6 +53,23 @@ make all CITY=MON
 
 # New York City
 make all CITY=NYC
+```
+
+## Running the compiled binary
+
+[Once the binaries are compiled](#compilation), they may be run as follows:
+
+```sh
+"./$EXECUTABLE" "$PATH_TO_BIKES" "$PATH_TO_STATIONS"
+```
+
+For example:
+
+```sh
+# make all CITY=MON
+# ./bikeSharingMON "$PATH_TO_BIKES" "$PATH_TO_STATIONS"
+# For example, if all files are present on the cwd:
+./bikeSharingMON ./bikesMON.csv ./stationsMON.csv
 ```
 
 ## File structure
