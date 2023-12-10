@@ -31,8 +31,8 @@ $(OBJECTS): %.o : %.c
 
 # Compiles and links specified test file
 # make test file=./path/to/file.c (builds and runs specified file)
-test:
-	$(COMPILER) $(FLAGS) $(LINKER_FLAGS) $(TEST_FLAGS) -Iheaders -Itests $(file) $(SOURCES) -o ./tests/test.out
+test: ./CTable/htmlTable.o
+	$(COMPILER) $(FLAGS) $(LINKER_FLAGS) $(TEST_FLAGS) $(HEADERS) -Itests $(file) $(SOURCES) ./CTable/htmlTable.o -o ./tests/test.out
 
 # Build and link together all sources (NOT THE TESTS)
 .PHONY: all
