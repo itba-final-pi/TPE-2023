@@ -127,6 +127,8 @@ All tests are run on the following targets simultaneously each time a commit is 
 - ubuntu-20.04
 - ITBA's Pampero Server
 
+![github-actions-screenshot](https://storage.googleapis.com/datasets-tpe/Screenshot%202023-12-09%20at%2023.51.36.png)
+
 At the same time, one may run tests locally (\*) running the following command from the repository's main directory
 
 ```sh
