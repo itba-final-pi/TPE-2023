@@ -131,7 +131,7 @@ int main(int argc, char *argv[])
 				// Format the output date
 				struct tm date_time;
 				strptime(date, "%Y-%m-%d %H:%M:%S", &date_time);
-				strftime(date, DATE_LEN, "%d/%m/%Y %H:%M:%S", &date_time);
+				strftime(date, DATE_LEN, "%d/%m/%Y %H:%M", &date_time);
 
 				addHTMLRow(html_table, name, end_station_name, date);
 				addCsvRow(csv_table, name, end_station_name, date);

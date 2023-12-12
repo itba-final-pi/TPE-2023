@@ -14,7 +14,7 @@
 #include <time.h>
 
 // Fix tm_wday values, since they start on Sunday. Recives a struct tm
-#define GET_WEEK_DAY(date) date.tm_wday - 1 > 0 ? date.tm_wday - 1 : NUMBER_OF_WEEK_DAYS - 1
+#define GET_WEEK_DAY(date) date.tm_wday - 1 >= 0 ? date.tm_wday - 1 : NUMBER_OF_WEEK_DAYS - 1
 
 typedef struct node
 {
