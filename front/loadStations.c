@@ -22,6 +22,7 @@ static const int fields_station[NUMBER_OF_FIELDS_STATIONS] = {NAME, LATITUDE, LO
 void loadStations(CityStations city_stations, char * file_name){
 		FileHandler file = newFileHandler(file_name);
 		if (file == NULL || errno != 0) {
+			freeCityStations(city_stations);
 			freeFileHandler(file);
 			return;
 		}

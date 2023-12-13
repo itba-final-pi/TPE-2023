@@ -106,7 +106,7 @@ int compareStationsByTrips(BikeStation a, BikeStation b){
     size_t aTrips = getAllTrips(a);
     size_t bTrips = getAllTrips(b);
     if (aTrips == bTrips)
-        return compareStationsByName(a, b);
+        return -compareStationsByName(a, b);
     return aTrips - bTrips;
 }
 
