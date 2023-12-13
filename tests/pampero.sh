@@ -40,6 +40,7 @@ git checkout $BRANCH_NAME
 if [[ -d "../$DATASET" ]]
 then
     ln -s "../$DATASET" "$DATASET"
+    ln -s "../$DATASET SMALL" "$DATASET SMALL"
 else
     # @todo Potentially replace by automatically downloading the dataset
     echo "::warning title={Failed to copy Dataset ($DATASET) into Folder ($FOLDER)}::A folder called \"$DATASET\" should be found at the repository's parent directory within pampero."
